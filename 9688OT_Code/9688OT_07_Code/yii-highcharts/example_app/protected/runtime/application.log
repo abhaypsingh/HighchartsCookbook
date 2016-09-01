@@ -1,0 +1,294 @@
+2014/02/06 21:55:00 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "example".' in /usr/share/webapps/yii/web/CController.php:483
+Stack trace:
+#0 /usr/share/webapps/yii/web/CController.php(270): CController->missingAction('example')
+#1 /usr/share/webapps/yii/web/CWebApplication.php(282): CController->run('example')
+#2 /usr/share/webapps/yii/web/CWebApplication.php(141): CWebApplication->runController('site/example')
+#3 /usr/share/webapps/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#4 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/index.php(13): CApplication->run()
+#5 {main}
+REQUEST_URI=/example_app/site/example
+---
+2014/02/06 21:56:21 [error] [exception.CHttpException.403] exception 'CHttpException' with message 'Login Required' in /usr/share/webapps/yii/web/auth/CWebUser.php:394
+Stack trace:
+#0 /usr/share/webapps/yii/web/auth/CAccessControlFilter.php(180): CWebUser->loginRequired()
+#1 /usr/share/webapps/yii/web/auth/CAccessControlFilter.php(145): CAccessControlFilter->accessDenied(Object(CWebUser), 'You are not aut...')
+#2 /usr/share/webapps/yii/web/filters/CFilter.php(38): CAccessControlFilter->preFilter(Object(CFilterChain))
+#3 /usr/share/webapps/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#4 /usr/share/webapps/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#5 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#6 /usr/share/webapps/yii/web/CController.php(291): CFilterChain->run()
+#7 /usr/share/webapps/yii/web/CController.php(265): CController->runActionWithFilters(Object(EActionRestGET), Array)
+#8 /usr/share/webapps/yii/web/CWebApplication.php(282): CController->run('REST.GET')
+#9 /usr/share/webapps/yii/web/CWebApplication.php(141): CWebApplication->runController('monster/REST.GE...')
+#10 /usr/share/webapps/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#11 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/index.php(13): CApplication->run()
+#12 {main}
+REQUEST_URI=/example_app/api/monster
+HTTP_REFERER=http://localhost:8080/example_app/site/example
+---
+2014/02/06 22:23:29 [error] [exception.CHttpException.406] exception 'CHttpException' with message 'Parameter '[object Object]' is not allowed for model (Monster)' in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/components/ERestResourceHelper.php:152
+Stack trace:
+#0 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php(691): ERestResourceHelper->setModelAttributes(Object(Monster), Array, Array)
+#1 [internal function]: ERestEventListenerRegistry->{closure}(Object(Monster), Array, Array)
+#2 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/Eventor/Eventor.php(170): call_user_func_array(Object(Closure), Array)
+#3 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/behaviors/ERestBehavior.php(109): Eventor->emit('model.apply.put...', Array)
+#4 [internal function]: ERestBehavior->emitRest('model.apply.put...', Array)
+#5 /usr/share/webapps/yii/base/CComponent.php(261): call_user_func_array(Array, Array)
+#6 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): CComponent->__call('emitRest', Array)
+#7 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): MonsterController->emitRest('model.apply.put...', Array)
+#8 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(47): EActionRestPUT->handlePut('1')
+#9 [internal function]: EActionRestPUT->run('1', NULL, NULL)
+#10 /usr/share/webapps/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(EActionRestPUT), Array)
+#11 /usr/share/webapps/yii/web/actions/CAction.php(74): CAction->runWithParamsInternal(Object(EActionRestPUT), Object(ReflectionMethod), Array)
+#12 /usr/share/webapps/yii/web/CController.php(308): CAction->runWithParams(Array)
+#13 /usr/share/webapps/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(EActionRestPUT))
+#14 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/filters/ERestFilter.php(56): CFilterChain->run()
+#15 /usr/share/webapps/yii/web/filters/CFilter.php(38): ERestFilter->preFilter(Object(CFilterChain))
+#16 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CFilter->filter(Object(CFilterChain))
+#17 /usr/share/webapps/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#18 /usr/share/webapps/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#19 /usr/share/webapps/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#20 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#21 /usr/share/webapps/yii/web/CController.php(291): CFilterChain->run()
+#22 /usr/share/webapps/yii/web/CController.php(265): CController->runActionWithFilters(Object(EActionRestPUT), Array)
+#23 /usr/share/webapps/yii/web/CWebApplication.php(282): CController->run('REST.PUT')
+#24 /usr/share/webapps/yii/web/CWebApplication.php(141): CWebApplication->runController('monster/REST.PU...')
+#25 /usr/share/webapps/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#26 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/example_app/api/monster/1
+HTTP_REFERER=http://localhost:8080/example_app/site/example
+---
+2014/02/06 22:23:30 [error] [exception.CHttpException.406] exception 'CHttpException' with message 'Parameter '[object Object]' is not allowed for model (Monster)' in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/components/ERestResourceHelper.php:152
+Stack trace:
+#0 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php(691): ERestResourceHelper->setModelAttributes(Object(Monster), Array, Array)
+#1 [internal function]: ERestEventListenerRegistry->{closure}(Object(Monster), Array, Array)
+#2 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/Eventor/Eventor.php(170): call_user_func_array(Object(Closure), Array)
+#3 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/behaviors/ERestBehavior.php(109): Eventor->emit('model.apply.put...', Array)
+#4 [internal function]: ERestBehavior->emitRest('model.apply.put...', Array)
+#5 /usr/share/webapps/yii/base/CComponent.php(261): call_user_func_array(Array, Array)
+#6 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): CComponent->__call('emitRest', Array)
+#7 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): MonsterController->emitRest('model.apply.put...', Array)
+#8 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(47): EActionRestPUT->handlePut('1')
+#9 [internal function]: EActionRestPUT->run('1', NULL, NULL)
+#10 /usr/share/webapps/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(EActionRestPUT), Array)
+#11 /usr/share/webapps/yii/web/actions/CAction.php(74): CAction->runWithParamsInternal(Object(EActionRestPUT), Object(ReflectionMethod), Array)
+#12 /usr/share/webapps/yii/web/CController.php(308): CAction->runWithParams(Array)
+#13 /usr/share/webapps/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(EActionRestPUT))
+#14 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/filters/ERestFilter.php(56): CFilterChain->run()
+#15 /usr/share/webapps/yii/web/filters/CFilter.php(38): ERestFilter->preFilter(Object(CFilterChain))
+#16 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CFilter->filter(Object(CFilterChain))
+#17 /usr/share/webapps/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#18 /usr/share/webapps/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#19 /usr/share/webapps/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#20 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#21 /usr/share/webapps/yii/web/CController.php(291): CFilterChain->run()
+#22 /usr/share/webapps/yii/web/CController.php(265): CController->runActionWithFilters(Object(EActionRestPUT), Array)
+#23 /usr/share/webapps/yii/web/CWebApplication.php(282): CController->run('REST.PUT')
+#24 /usr/share/webapps/yii/web/CWebApplication.php(141): CWebApplication->runController('monster/REST.PU...')
+#25 /usr/share/webapps/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#26 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/example_app/api/monster/1
+HTTP_REFERER=http://localhost:8080/example_app/site/example
+---
+2014/02/06 22:23:30 [error] [exception.CHttpException.406] exception 'CHttpException' with message 'Parameter '[object Object]' is not allowed for model (Monster)' in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/components/ERestResourceHelper.php:152
+Stack trace:
+#0 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php(691): ERestResourceHelper->setModelAttributes(Object(Monster), Array, Array)
+#1 [internal function]: ERestEventListenerRegistry->{closure}(Object(Monster), Array, Array)
+#2 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/Eventor/Eventor.php(170): call_user_func_array(Object(Closure), Array)
+#3 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/behaviors/ERestBehavior.php(109): Eventor->emit('model.apply.put...', Array)
+#4 [internal function]: ERestBehavior->emitRest('model.apply.put...', Array)
+#5 /usr/share/webapps/yii/base/CComponent.php(261): call_user_func_array(Array, Array)
+#6 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): CComponent->__call('emitRest', Array)
+#7 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): MonsterController->emitRest('model.apply.put...', Array)
+#8 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(47): EActionRestPUT->handlePut('1')
+#9 [internal function]: EActionRestPUT->run('1', NULL, NULL)
+#10 /usr/share/webapps/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(EActionRestPUT), Array)
+#11 /usr/share/webapps/yii/web/actions/CAction.php(74): CAction->runWithParamsInternal(Object(EActionRestPUT), Object(ReflectionMethod), Array)
+#12 /usr/share/webapps/yii/web/CController.php(308): CAction->runWithParams(Array)
+#13 /usr/share/webapps/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(EActionRestPUT))
+#14 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/filters/ERestFilter.php(56): CFilterChain->run()
+#15 /usr/share/webapps/yii/web/filters/CFilter.php(38): ERestFilter->preFilter(Object(CFilterChain))
+#16 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CFilter->filter(Object(CFilterChain))
+#17 /usr/share/webapps/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#18 /usr/share/webapps/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#19 /usr/share/webapps/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#20 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#21 /usr/share/webapps/yii/web/CController.php(291): CFilterChain->run()
+#22 /usr/share/webapps/yii/web/CController.php(265): CController->runActionWithFilters(Object(EActionRestPUT), Array)
+#23 /usr/share/webapps/yii/web/CWebApplication.php(282): CController->run('REST.PUT')
+#24 /usr/share/webapps/yii/web/CWebApplication.php(141): CWebApplication->runController('monster/REST.PU...')
+#25 /usr/share/webapps/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#26 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/example_app/api/monster/1
+HTTP_REFERER=http://localhost:8080/example_app/site/example
+---
+2014/02/06 22:25:35 [error] [exception.CHttpException.406] exception 'CHttpException' with message 'Parameter '[object Object]' is not allowed for model (Monster)' in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/components/ERestResourceHelper.php:152
+Stack trace:
+#0 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php(691): ERestResourceHelper->setModelAttributes(Object(Monster), Array, Array)
+#1 [internal function]: ERestEventListenerRegistry->{closure}(Object(Monster), Array, Array)
+#2 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/Eventor/Eventor.php(170): call_user_func_array(Object(Closure), Array)
+#3 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/behaviors/ERestBehavior.php(109): Eventor->emit('model.apply.put...', Array)
+#4 [internal function]: ERestBehavior->emitRest('model.apply.put...', Array)
+#5 /usr/share/webapps/yii/base/CComponent.php(261): call_user_func_array(Array, Array)
+#6 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): CComponent->__call('emitRest', Array)
+#7 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): MonsterController->emitRest('model.apply.put...', Array)
+#8 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(47): EActionRestPUT->handlePut('1')
+#9 [internal function]: EActionRestPUT->run('1', NULL, NULL)
+#10 /usr/share/webapps/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(EActionRestPUT), Array)
+#11 /usr/share/webapps/yii/web/actions/CAction.php(74): CAction->runWithParamsInternal(Object(EActionRestPUT), Object(ReflectionMethod), Array)
+#12 /usr/share/webapps/yii/web/CController.php(308): CAction->runWithParams(Array)
+#13 /usr/share/webapps/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(EActionRestPUT))
+#14 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/filters/ERestFilter.php(56): CFilterChain->run()
+#15 /usr/share/webapps/yii/web/filters/CFilter.php(38): ERestFilter->preFilter(Object(CFilterChain))
+#16 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CFilter->filter(Object(CFilterChain))
+#17 /usr/share/webapps/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#18 /usr/share/webapps/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#19 /usr/share/webapps/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#20 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#21 /usr/share/webapps/yii/web/CController.php(291): CFilterChain->run()
+#22 /usr/share/webapps/yii/web/CController.php(265): CController->runActionWithFilters(Object(EActionRestPUT), Array)
+#23 /usr/share/webapps/yii/web/CWebApplication.php(282): CController->run('REST.PUT')
+#24 /usr/share/webapps/yii/web/CWebApplication.php(141): CWebApplication->runController('monster/REST.PU...')
+#25 /usr/share/webapps/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#26 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/example_app/api/monster/1
+HTTP_REFERER=http://localhost:8080/example_app/site/example
+---
+2014/02/06 22:26:32 [error] [exception.CHttpException.406] exception 'CHttpException' with message 'Parameter '[object Object]' is not allowed for model (Monster)' in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/components/ERestResourceHelper.php:152
+Stack trace:
+#0 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php(691): ERestResourceHelper->setModelAttributes(Object(Monster), Array, Array)
+#1 [internal function]: ERestEventListenerRegistry->{closure}(Object(Monster), Array, Array)
+#2 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/Eventor/Eventor.php(170): call_user_func_array(Object(Closure), Array)
+#3 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/behaviors/ERestBehavior.php(109): Eventor->emit('model.apply.put...', Array)
+#4 [internal function]: ERestBehavior->emitRest('model.apply.put...', Array)
+#5 /usr/share/webapps/yii/base/CComponent.php(261): call_user_func_array(Array, Array)
+#6 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): CComponent->__call('emitRest', Array)
+#7 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): MonsterController->emitRest('model.apply.put...', Array)
+#8 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(47): EActionRestPUT->handlePut('1')
+#9 [internal function]: EActionRestPUT->run('1', NULL, NULL)
+#10 /usr/share/webapps/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(EActionRestPUT), Array)
+#11 /usr/share/webapps/yii/web/actions/CAction.php(74): CAction->runWithParamsInternal(Object(EActionRestPUT), Object(ReflectionMethod), Array)
+#12 /usr/share/webapps/yii/web/CController.php(308): CAction->runWithParams(Array)
+#13 /usr/share/webapps/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(EActionRestPUT))
+#14 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/filters/ERestFilter.php(56): CFilterChain->run()
+#15 /usr/share/webapps/yii/web/filters/CFilter.php(38): ERestFilter->preFilter(Object(CFilterChain))
+#16 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CFilter->filter(Object(CFilterChain))
+#17 /usr/share/webapps/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#18 /usr/share/webapps/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#19 /usr/share/webapps/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#20 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#21 /usr/share/webapps/yii/web/CController.php(291): CFilterChain->run()
+#22 /usr/share/webapps/yii/web/CController.php(265): CController->runActionWithFilters(Object(EActionRestPUT), Array)
+#23 /usr/share/webapps/yii/web/CWebApplication.php(282): CController->run('REST.PUT')
+#24 /usr/share/webapps/yii/web/CWebApplication.php(141): CWebApplication->runController('monster/REST.PU...')
+#25 /usr/share/webapps/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#26 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/example_app/api/monster/1
+HTTP_REFERER=http://localhost:8080/example_app/site/example
+---
+2014/02/06 22:27:53 [error] [exception.CHttpException.406] exception 'CHttpException' with message 'Parameter '[object Object]' is not allowed for model (Monster)' in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/components/ERestResourceHelper.php:152
+Stack trace:
+#0 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php(691): ERestResourceHelper->setModelAttributes(Object(Monster), Array, Array)
+#1 [internal function]: ERestEventListenerRegistry->{closure}(Object(Monster), Array, Array)
+#2 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/Eventor/Eventor.php(170): call_user_func_array(Object(Closure), Array)
+#3 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/behaviors/ERestBehavior.php(109): Eventor->emit('model.apply.put...', Array)
+#4 [internal function]: ERestBehavior->emitRest('model.apply.put...', Array)
+#5 /usr/share/webapps/yii/base/CComponent.php(261): call_user_func_array(Array, Array)
+#6 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): CComponent->__call('emitRest', Array)
+#7 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(71): MonsterController->emitRest('model.apply.put...', Array)
+#8 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/actions/EActionRestPUT.php(47): EActionRestPUT->handlePut('1')
+#9 [internal function]: EActionRestPUT->run('1', NULL, NULL)
+#10 /usr/share/webapps/yii/web/actions/CAction.php(108): ReflectionMethod->invokeArgs(Object(EActionRestPUT), Array)
+#11 /usr/share/webapps/yii/web/actions/CAction.php(74): CAction->runWithParamsInternal(Object(EActionRestPUT), Object(ReflectionMethod), Array)
+#12 /usr/share/webapps/yii/web/CController.php(308): CAction->runWithParams(Array)
+#13 /usr/share/webapps/yii/web/filters/CFilterChain.php(133): CController->runAction(Object(EActionRestPUT))
+#14 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/filters/ERestFilter.php(56): CFilterChain->run()
+#15 /usr/share/webapps/yii/web/filters/CFilter.php(38): ERestFilter->preFilter(Object(CFilterChain))
+#16 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CFilter->filter(Object(CFilterChain))
+#17 /usr/share/webapps/yii/web/filters/CFilter.php(40): CFilterChain->run()
+#18 /usr/share/webapps/yii/web/CController.php(1145): CFilter->filter(Object(CFilterChain))
+#19 /usr/share/webapps/yii/web/filters/CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#20 /usr/share/webapps/yii/web/filters/CFilterChain.php(130): CInlineFilter->filter(Object(CFilterChain))
+#21 /usr/share/webapps/yii/web/CController.php(291): CFilterChain->run()
+#22 /usr/share/webapps/yii/web/CController.php(265): CController->runActionWithFilters(Object(EActionRestPUT), Array)
+#23 /usr/share/webapps/yii/web/CWebApplication.php(282): CController->run('REST.PUT')
+#24 /usr/share/webapps/yii/web/CWebApplication.php(141): CWebApplication->runController('monster/REST.PU...')
+#25 /usr/share/webapps/yii/base/CApplication.php(180): CWebApplication->processRequest()
+#26 /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/index.php(13): CApplication->run()
+#27 {main}
+REQUEST_URI=/example_app/api/monster/1
+HTTP_REFERER=http://localhost:8080/example_app/site/example
+---
+2014/02/06 22:27:59 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:03 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:05 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:07 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:09 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:10 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:19 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:20 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:22 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:23 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:25 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:27 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:28 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:30 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:32 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:33 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)
+2014/02/06 22:28:35 [warning] [application] Failed to set unsafe attribute "id" of "Monster".
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (114)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/ARBehaviors/ERestActiveRecordRelationBehavior.php (48)
+in /home/nterwoord/Dropbox/flex/Highcharts Cookbook/Chapters/chapter_7/yii-highcharts/example_app/protected/extensions/starship/RestfullYii/events/ERestEventListenerRegistry.php (740)

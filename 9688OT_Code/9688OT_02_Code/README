@@ -1,0 +1,28 @@
+Setup Instructions
+==================
+
+Server-side setup
+----------------------------
+1. Install Python 2.7 (http://www.python.org/getit/)
+2. Install pip (http://www.pip-installer.org/en/latest/installing.html)
+3. Run the following command in the same folder that contains `requirements.txt`
+
+    pip install requirements.txt
+    
+4. Run the appropriate application:
+
+    python websocket_server.py # Websocket Server: on port 8001
+    python bottle_server.py    # AJAX Server     : on port 8000
+
+Client-side setup
+-----------------
+1. Install bower (http://bower.io)
+2. From the same folder that contains `bower.json`, run the following command to install any necessary JavaScript packages:
+
+    bower install
+
+Running the examples
+--------------------
+If the above steps have been followed correctly, it should be possible to view the examples after starting `bottle_server.py` and visiting the following URL:
+
+    http://localhost:8000/index.html

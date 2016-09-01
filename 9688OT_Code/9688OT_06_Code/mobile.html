@@ -1,0 +1,99 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>My Page</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+	<style type='text/css'>
+	    .highcharts-container, .chart {
+	        width: 100%;
+	    }
+	</style>
+</head> 
+<body> 
+
+<div data-role="page">
+
+	<div data-role="header">
+		<h1>Highcharts with jQuery Mobile</h1>
+	</div>
+
+	<div data-role="content">
+		<ul data-role='listview' data-inset='true' data-filter='true'>
+		    <li><a href='#chart1'>First Chart</a></li>
+		    <li><a href='#chart2'>Second Chart</a></li>
+		</ul>
+	</div>
+
+</div>
+
+<div data-role="page" id='chart1'>
+
+	<div data-role="header">
+		<h1>First Chart</h1>
+	</div>
+
+	<div data-role="content">	
+		<div class='chart' id='example1'></div>
+	</div>
+
+</div>
+
+<div data-role="page" id='chart2'>
+
+	<div data-role="header">
+		<h1>Second Chart</h1>
+	</div>
+
+	<div data-role="content">	
+		<div class='chart' id='example2'
+            data-chart='{"type": "column"}'
+            data-title='{"text": "Using data-attributes to load charts"}'
+            data-series='[{"name": "2^x", "data": [8,2,4,1]}, {"name": "2^(x+1)", "data": [2,16,8,4]}]'
+        ></div>
+	</div>
+
+</div>
+
+<!-- Include the verbose version of highcharts -->
+<script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+<!-- Include the verbose version of highcharts extras -->
+<script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+
+<!-- Include our scripts -->
+<script type='text/javascript'>
+    $('#chart1').on('pageshow', function() {
+        var chart1Options = {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Creating Charts with JQuery'
+            },
+            subtitle: {
+                text: 'Look familiar?'
+            },
+            series: [{
+                name: '2^x',
+                data: [1,2,4,8]
+            }, {
+                name: '2^(x+1)',
+                data: [2,4,8,16]
+            }]
+        };
+        
+        var chart1 = $('#example1').highcharts(chart1Options).highcharts();
+    })
+    
+    $('#chart2').on('pageshow', function() {
+        var chart2Settings = $('#example2').data();
+        var chart2 = $('#example2').highcharts(chart2Settings).highcharts();
+    });
+    
+</script>
+
+</body>
+</html>

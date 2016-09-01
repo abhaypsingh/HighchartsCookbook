@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+    <head>
+        <script src='./bower_components/jquery/jquery.js'></script> 
+        <script src='./bower_components/highcharts/highcharts.src.js'></script> 
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script> 
+        <script src='./bower_components/underscore/underscore.js'></script> 
+        <script src='./bower_components/underscore/backbone.js'></script> 
+        <script src='./bower_components/backbone.localStorage/backbone.localStorage.js'></script> 
+        <script src='./example.js'></script> 
+        
+        <style type='text/css'>
+            #monsters {
+                list-style: none;
+                padding: 0px;
+            }
+            #monsters li {
+                margin-bottom: 5px;
+            }
+            #monsters .card {
+                clear: both;
+                padding: 10px;
+                border: 1px solid #aaa;
+            }
+            #monsters .card .graph {
+                float: left;
+                width: 300px;
+                height: 300px;
+            }
+            #monsters .card .stats .row > label {
+                display: inline-block;
+                width: 100px;
+                font-size: 1.0em;
+                text-transform: capitalize;
+            }
+            #monsters .card .stats .row > input {
+                width: 50px;
+                padding: 5px;
+                text-align: right;
+                font-size: 1.2em;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div id='main'>
+            <input id='monster-name' type='text' />
+            <input id='new-monster' type='button' value='Create New Monster' />
+            <ul id='monsters'>
+            </ul>
+        </div>
+    
+        <script type='text/template' id='monster-template'>
+            <div class='card'>
+                <div class='graph' id='monster-<%= stats.name %>'>
+                </div>
+                <div class='stats'>
+                    <h2><%= stats.name %> <input class='feed' type='button' value='Feed Me!' /></h2> 
+                
+                    <% var keys = ['hp', 'attack', 'defense', 'special_attack', 'special_defense', 'speed']; %>
+                    <% var key_stats = _.chain(stats).pick(keys).value(); %>
+                    <% _.each(key_stats , function(value, key) { %>
+                    <div class='row'>
+                        <label for='<%= key %>'><%= key %></label>
+                        <input type='text' name='<%= key %>' value='<%= value %>' />
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+        </script>
+    </body>
+</html>

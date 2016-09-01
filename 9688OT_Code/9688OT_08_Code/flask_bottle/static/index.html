@@ -1,0 +1,38 @@
+<html> 
+    <head> 
+    </head> 
+    <body> 
+        <div id='example'></div> 
+        <script src='./js/jquery/jquery.js'></script>
+        <script src='./js/highcharts/highcharts.js'></script> 
+        
+        <script type='text/javascript'> 
+            $(document).ready(function() { 
+                var options = { 
+                    chart: { 
+                        type: 'bar', 
+                        events: { 
+                            load: function () { 
+                                var self = this; 
+                                setInterval(function() { 
+                                    $.getJSON('/ajax/series', function(data) { 
+                                        var series = self.series[0]; 
+                                        series.setData(data); 
+                                    }); 
+                                }, 1000); 
+                            } 
+                        } 
+                    }, 
+                    title: { 
+                        text: 'Using AJAX for polling charts' 
+                    }, 
+                    series: [{ 
+                        name: 'AJAX data (series)', 
+                        data: [] 
+                    }] 
+                }; 
+                $('#example').highcharts(options); 
+            }); 
+        </script> 
+    </body> 
+</html>

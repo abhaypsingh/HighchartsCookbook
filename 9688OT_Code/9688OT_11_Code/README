@@ -1,0 +1,24 @@
+Setup Instructions
+==================
+
+Server-side setup
+----------------------------
+1. Install NodeJS (http://nodejs.org/)
+2. Install NodeJS dependencies
+
+    npm install
+    
+3. Run the NodeJS application
+
+    node app.js
+
+Client-side setup
+-----------------
+1. Install bower (http://bower.io)
+2. From the same folder that contains `bower.json`, run the following command to install any necessary JavaScript packages:
+
+    bower install
+
+Running the examples
+--------------------
+1. After running `node app.js`, visit `http://localhost:8888/index.html`

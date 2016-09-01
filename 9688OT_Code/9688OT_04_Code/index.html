@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <title>Chapter 4 - Sharing charts on the web</title>
+        
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+                min-width: 300px;
+                min-height: 300px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .master {
+                width: 300px;
+                height: 100px;
+            }
+            
+            .short {
+                height: 200px;
+            }
+            
+            .detail {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .tooltip {
+                border: 1px solid #666;
+                background: #fff;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            
+            .relative {
+                position: relative;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+            
+            #textInput {
+                position: absolute;
+                top: 220px;
+                left: 20px;
+                width: 300px;
+                height: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example2'></div><br/>
+            <input type='button' id='chartLink' value='Get Link' />
+            <input type='text' id='link'/>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example3'></div>
+        </div>
+        
+        <!-- Include the verbose version of jQuery -->
+        <script src='./bower_components/jquery/jquery.js'></script>
+        
+        <!-- Include the verbose version of highcharts -->
+        <script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+        
+        <!-- Include the exporting module -->
+        <script src='./bower_components/highcharts/modules/exporting.src.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                // --- Rendering charts on the server side ---
+                var chart1Options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Rendering charts on the server side'
+                    },
+                    series: [{
+                        name: 'Bar #1',
+                        data: [1,2,3,4]
+                    }],
+                    exporting: {
+                        enabled: true,
+                        url: 'http://localhost:3003/'
+                    }
+                }
+                
+                $('#example1').highcharts(chart1Options);
+                
+                // --- Emailing dynamic charts ---
+                var getParams = function() {
+                    var searchParams = window.location.search.substr(1),
+                        paramPairs = searchParams.split('&'),
+                        params = {},
+                        i, temp;
+
+                    for (i=0; i < paramPairs.length; i++) {
+                        if (paramPairs[i].trim() === "") {
+                            continue;
+                        }
+                        temp = paramPairs[i].split('=');
+                        params[temp[0]] = JSON.parse(temp[1]);
+                    }
+                    
+                    return params;
+                };
+                
+                var params = getParams();
+                
+                var chartLink = function(chart) {
+                    var config = chart.options,
+                        url = window.location.origin + window.location.pathname + '?',
+                        key, value;
+                    
+                    // determine which configurable options to be used
+                    key = 'data';
+                    value = config.series[0].data;
+                    url += key + '=' + JSON.stringify(value);
+
+                    return url;
+                };
+                
+                var chart2Options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Emailing dynamic charts'
+                    },
+                    series: [{
+                        name: 'Bar #1',
+                        data: params.data || [1,2,3,4]
+                    }],
+                    exporting: {
+                        enabled: true,
+                        url: 'http://localhost:3003/'
+                    }
+                }
+                
+                var chart2 = $('#example2').highcharts(chart2Options).highcharts();
+                
+                $('#chartLink').click(function(){
+                    $('#link').val(chartLink(chart2));
+                });
+                
+                // --- Preparing charts for printing ---
+                var printCharts = function (charts) {
+                    var origDisplay = [],
+                        origParent = [],
+                        body = document.body,
+                        childNodes = body.childNodes,
+                        ELEMENT = 1;
+
+                    // (1) default to all charts
+                    charts = charts || Highcharts.charts;
+
+                    // (2) hide all body content
+                    Highcharts.each(childNodes, function (node, i) {
+                        if (node.nodeType === ELEMENT) {
+                            origDisplay[i] = node.style.display;
+                            node.style.display = "none";
+                        }
+                    });
+
+                    // (3) put the charts back in
+                    $.each(charts, function (i, chart) {
+                        origParent[i] = chart.container.parentNode;
+                        body.appendChild(chart.container);
+                    });
+
+                    // (4) print
+                    window.print();
+
+                    // (5) allow the browser to prepare before reverting
+                    setTimeout(function () {
+                        // (6) put the charts back in
+                        $.each(charts, function (i, chart) {
+                            origParent[i].appendChild(chart.container);
+                        });
+
+                        // (7) restore all body content
+                        Highcharts.each(childNodes, function (node, i) {
+                            if (node.nodeType === 1) {
+                                node.style.display = origDisplay[i];
+                            }
+                        });
+                    }, 500);
+                };
+                
+                var defaultOptions = Highcharts.getOptions();
+                var buttons = defaultOptions.exporting.buttons.contextButton.menuItems;
+
+                // replace the 'Print Chart button'
+                buttons[0].onclick = function () {
+                    printCharts();
+                };
+                
+                var chart3Options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Preparing charts for printing'
+                    },
+                    series: [{
+                        name: 'Bar #1',
+                        data: [1,2,3,4]
+                    }],
+                    exporting: {
+                        buttons: {
+                            contextButton: {
+                                menuItems: buttons
+                            }
+                        }
+                    }
+                }
+                
+                $('#example3').highcharts(chart3Options);
+                
+                // --- Preparing charts for printing ---
+                // 
+                //  Easy
+                //
+                // ... Is there anything special about this?
+                // ... Is it just a 'here's things you should be aware of'?
+                // ... Print style sheet? Print Style?
+                // Oh... by default, will only print one chart; how to do multiple?
+                // ... Use the code on this page: http://stackoverflow.com/questions/11125969/highcharts-print-all-button
+                
+                
+                // --- Making charts responsive ---
+                // 
+                //  Easy
+                //
+                // ... Mostly dealing with window resize events, I think.
+                // ... Also dealing with capabilities (e.g. touch etc.)
+            });
+        </script>        
+    </body>
+</html>

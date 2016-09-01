@@ -1,0 +1,275 @@
+<html>
+    <head>
+        <title>Chapter 11 - System Integration - Examples</title>
+        
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+                min-width: 300px;
+                min-height: 300px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .relative {
+                position: relative;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+            
+            label {
+                width: 100px;
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div>
+            <label for='directory'>Initial Directory:</label>
+            <input type='text' name='directory' id='directory' />
+            <input type='button' name='go' id='go' value='Explore' />
+            <br/>
+            <label for='directories'>Sub-directories:</label>
+            <select name='directories' id='directories'>
+            </select>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example3a'></div>
+            <div class='example' id='example3b'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example4'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example5'></div>
+        </div>
+        
+        <!-- Include the verbose version of jQuery -->
+        <script src='./bower_components/jquery/jquery.js'></script>
+        
+        <!-- Include the verbose version of highcharts -->
+        <script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+        
+        <!-- Include Underscore -->
+        <script src='./bower_components/underscore/underscore.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                // --- Explore Hard Drive Usage ---
+                var drawDirectoryChart = function(files, directory) {
+                    // Convert files to proper format
+                    var slices = _.map(files, function(item) {
+                        var sizeInMB = parseFloat((item.size / (1024 * 1024)).toFixed(2));
+                    
+                        return [item.name, sizeInMB];
+                    });
+                
+                    // Only display Top 5 entries... for performance
+                    //slices = _.first(slices, 5)
+                    
+                    var chart1Options = {
+                        chart: {
+                            type: 'pie'
+                        },
+                        title: {
+                            text: directory || 'Explore Hard Drive Usage'
+                        },
+                        series: [{
+                            name: 'Size (MB)',
+                            data: slices
+                        }]
+                    };
+                    
+                    $('#example1').highcharts(chart1Options);
+                };
+                
+                var updateDirectorySelector = function (directories) {
+                    var $selector = $('#directories');
+                    $selector.empty();
+                    _.each(directories, function(directory) {
+                        var newElem = $('<option>', {
+                            value: directory.path,
+                            text: directory.name
+                        })
+                        $selector.append(newElem);
+                    });
+                };
+                
+                var getData = function (value) {
+                    var path = value || $('#directory').val();
+                    
+                    /*
+                    Don't forget content-type; express JS won't
+                    parse the request properly otherwise.
+                    */
+                    
+                    $.ajax({
+                        url: '/directory',
+                        data: JSON.stringify({'path': path}),
+                        type: 'POST',
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json'
+                    }).done(function(data) {
+                        drawDirectoryChart(data.files, path);
+                        updateDirectorySelector(data.directories);
+                    }).fail(function(data) {
+                        console.log(arguments);                        
+                    });
+                };
+                
+                $('#directory').on('keypress', function(e) {
+                    var key = e.keyCode || e.which;
+                    if (key == 13) {
+                        getData();
+                    }
+                });
+                $('#go').on('click', function() {
+                    getData();
+                });
+                
+                $('#directories').on('change', function(e) {
+                    getData(this.value);
+                });
+                
+                // --- Graph CPU and memory usage ---
+                var addOrUpdateSeries = function(chart, dataSeries, name) {
+                    var id = dataSeries.id,
+                        display = (name) ? '' + name + id : id,
+                        series = chart.get(id),
+                        percent = dataSeries.percent,
+                        timestamp = dataSeries.time,
+                        redraw = true,
+                        newSeries, existingPoints, point;
+                    
+                    if (series) {
+                        // Update!
+                        existingPoints = series.data.length
+                        point = {
+                            x: timestamp,
+                            y: percent
+                        }
+                        series.addPoint(point, redraw, existingPoints > 10);
+                    } else {
+                        // New!
+                        newSeries = {
+                            id: id,
+                            name: display,
+                            data: [{
+                                x: timestamp,
+                                y: percent
+                            }]
+                        }
+                        
+                        chart.addSeries(newSeries);
+                    }
+                };
+                
+                var chart3Options = {
+                    chart: {
+                        type: 'spline',
+                    },
+                    xAxis: {
+                        type: 'datetime'
+                    },
+                    yAxis: {
+                        max: 100,
+                        min: 0
+                    },
+                    series: []
+                }
+                
+                var chart3aOptions = _.extend({}, chart3Options);
+                chart3aOptions.chart.events = {
+                    load: function () {
+                        var self = this;
+                        setInterval(function() {
+                            $.getJSON('/cpu/', function(data) {
+                                for (var i=0; i < data.length; i++) {
+                                    addOrUpdateSeries(self, data[i], 'CPU #');
+                                }
+                            });
+                        }, 1000);
+                    }
+                };
+                chart3aOptions.title = {
+                    text: 'CPU usage'
+                };
+                $('#example3a').highcharts(chart3aOptions);
+                
+                var chart3bOptions = _.extend({}, chart3Options);
+                chart3bOptions.chart.events = {
+                    load: function () {
+                        var self = this;
+                        setInterval(function() {
+                            $.getJSON('/memory/', function(data) {
+                                for (var i=0; i < data.length; i++) {
+                                    addOrUpdateSeries(self, data[i]);
+                                }
+                            });
+                        }, 1000);
+                    }
+                };
+                chart3bOptions.title = {
+                    text: 'Memory usage'
+                };
+                
+                $('#example3b').highcharts(chart3bOptions);
+                
+                // --- Show Git commits by contributor ---
+                $.getJSON('/git/users', function(data) {
+                    var chart4Options = {
+                        chart: {
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Show Git commits by contributor'
+                        },
+                        series: [{
+                            name: 'Commits',
+                            data: data
+                        }]
+                    };
+                    $('#example4').highcharts(chart4Options);
+                });
+                
+                // --- Show Git commits over time ---
+                $.getJSON('/git/timeline', function(data) {
+                    var chart5Options = {
+                        chart: {
+                            type: 'spline'
+                        },
+                        title: {
+                            text: 'Show Git commits over time'
+                        },
+                        xAxis: {
+                            type: 'datetime'
+                        },
+                        series: [{
+                            name: 'Commits',
+                            data: data
+                        }]
+                    };
+                    $('#example5').highcharts(chart5Options);
+                });
+            });
+        </script>        
+    </body>
+</html>

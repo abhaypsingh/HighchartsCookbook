@@ -1,0 +1,388 @@
+<html>
+    <head>
+        <title>Chapter 1 - Getting Started with Highcharts - Examples</title>
+        
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example2'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example3'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example4a'></div>
+            <div class='example' id='example4b'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example5'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example6'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example7'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example8'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example9'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example10'></div>
+        </div>
+        
+        <!-- Include the verbose version of jQuery -->
+        <script src='./bower_components/jquery/jquery.js'></script>
+        
+        <!-- Include the verbose version of highcharts -->
+        <script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            var x = 'test';
+        
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                var chart1Options,
+                    chart2Options,
+                    chart3Options,
+                    chart4aOptions,
+                    chart4bOptions,
+                    chart5Options,
+                    chart6Options,
+                    chart7Options,
+                    chart8Options,
+                    chart9Options,
+                    chart10Options;
+            
+                // --- Creating your first chart ---
+                
+                // Define the options for our first chart 
+                chart1Options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Creating your first chart'
+                    },
+                    series: [{
+                        name: 'Bar #1',
+                        data: [1,2,3,4]
+                    }]
+                };
+                
+                // Render our chart
+                $('#example1').highcharts(chart1Options);
+                
+                // --- Including multiple series in one chart ---
+                // make a copy of the 1st example's options
+                chart2Options = $.extend({}, chart1Options);
+                chart2Options.title.text = 'Including multiple series in one chart';
+                
+                chart2Options.series.push({
+                    name: 'Bar #2',
+                    data: [4,3,2,1]
+                });
+                
+                $('#example2').highcharts(chart2Options);
+                
+                // --- Displaying multiple charts in one graph ---
+                chart3Options = $.extend({}, chart2Options);
+                chart3Options.title.text = 'Displaying multiple charts in one graph';
+                
+                chart3Options.series.push({
+                    name: 'Pie #1',
+                    type: 'pie',
+                    data: [1,2,3,4],
+                    dataLabels: {
+                        enabled: false
+                    },
+                    center: [0,0]
+                });
+                
+                $('#example3').highcharts(chart3Options);
+                
+                // --- Using the same data in multiple charts ---
+                var chart4Data = [1,2,3,4]
+                chart4aOptions = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Using the same data in multiple charts (bar)'
+                    },
+                    series: [{
+                        name: 'Bar #1',
+                        data: window.chart4Data
+                    }]
+                };
+                
+                chart4bOptions = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Using the same data in multiple charts (column)'
+                    },
+                    series: [{
+                        name: 'Column #1',
+                        data: chart4Data
+                    }]
+                };
+                                
+                $('#example4a').highcharts(chart4aOptions);
+                $('#example4b').highcharts(chart4bOptions);
+                
+                chart4Data = [1, 9, 9, 2, 1, 1, 2, 4];
+                $('#example4a').highcharts().series[0].setData(chart4Data);
+                $('#example4b').highcharts().series[0].setData(chart4Data);
+                
+                // --- Creating spiderweb graphs for comparison ---
+                chart5Options = {
+                    chart: {
+                        polar: true,
+                        type: 'line'
+                    },
+                    title: {
+                        text: 'Creating spiderweb graphs for comparison'
+                    },
+                    xAxis: {
+                        categories: ["Strength", "Speed", "Defense"],
+                        tickmarkPlacement: 'on',
+                        lineWidth: 0
+                    },
+                    yAxis: {
+                        gridLineInterpolation: 'polygon'
+                    },
+                    series: [{
+                        name: 'Fighter',
+                        data: [10, 1, 5],
+                        pointPlacement: 'on'
+                    }, {
+                        name: 'Rogue',
+                        data: [5, 10, 1],
+                        pointPlacement: 'on'
+                    }]
+                };
+                
+                $('#example5').highcharts(chart5Options);
+                
+                // --- Creating custom tooltips ---
+                chart6Options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Creating custom tooltips'
+                    },
+                    series: [{
+                        name: 'Bar #1',
+                        data: [1,2,3,4]
+                    }, {
+                        name: 'Bar #2',
+                        data: [4,3,2,1]
+                    }]
+                };
+                
+                chart6Options.tooltip = {
+                    formatter: function() {
+                        var tooltipMessage = '';
+                        
+                        tooltipMessage += 'X value: ' + this.x + '<br>';
+                        for (var i=0; i < this.points.length; i++) {
+                            tooltipMessage += 'Y[' + i + '] value: ' + this.points[i].y+ '<br>'
+                        }
+                    
+                        return tooltipMessage;
+                    },
+                    borderColor: '#f00',
+                    backgroundColor: '#ccc',
+                    shared: true
+                };
+                                
+                $('#example6').highcharts(chart6Options);
+                
+                // --- Adding extra content to tooltips ---
+                var chart7Categories = ['Apple', 'Pear', 'Banana']
+                chart7Options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Adding extra content to tooltips'
+                    },
+                    series: [{
+                        name: 'Fruits',
+                        data: [
+                            {'x': 1, 'y': 4, 'category': chart7Categories[0]},
+                            {'x': 2, 'y': 3, 'category': chart7Categories[1]},
+                            {'x': 3, 'y': 2, 'category': chart7Categories[2]},
+                        ]
+                    }]
+                };
+                
+                chart7Options.tooltip = {
+                    formatter: function() {
+                        return 'We have ' + this.y + ' ' + this.point.options.category + 's'
+                    }
+                };
+                                
+                $('#example7').highcharts(chart7Options);
+                
+                // --- Making charts internationalizable / localizable ---
+                chart8Options = {
+                    chart: {
+                        type: 'spline'
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        dateTimeLabelFormats: {
+                            month: '%B'
+                        }
+                    },
+                    title: {
+                        text: 'Making charts internationalizable / localizable'
+                    },
+                    series: [{
+                        name: 'Temperature?',
+                        data: [
+                            [Date.UTC(2013,  0, 1), 1],
+                            [Date.UTC(2013,  1, 1), 10],
+                            [Date.UTC(2013,  2, 1), 100],
+                            [Date.UTC(2013,  3, 1), 1000],
+                            [Date.UTC(2013,  4, 1), 10000],
+                            [Date.UTC(2013,  5, 1), 1000],
+                            [Date.UTC(2013,  6, 1), 100],
+                            [Date.UTC(2013,  7, 1), 1000],
+                            [Date.UTC(2013,  8, 1), 10000],
+                            [Date.UTC(2013,  9, 1), 1000],
+                            [Date.UTC(2013,  10, 1), 100],
+                            [Date.UTC(2013,  11, 1), 1],
+                        ]
+                    }]
+                };
+                
+                Highcharts.setOptions({
+                    lang: {
+                        months: ['Janvier', 'F\xE9vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao\xFBt', 'Septembre', 'Octobre', 'Novembre', 'D\xE9cembre'],
+                        thousandsSep: ' ',
+                        numericSymbols: [' mille']
+                    }
+                });          
+                $('#example8').highcharts(chart8Options);
+                
+                // --- Creating a new theme ---
+                var myTheme = {};
+                myTheme.colors = ["#000000", "#ff0000", "#00ff00", "#0000ff"];
+                myTheme.chart = {
+                    backgroundColor: '#cccccc'
+                };
+                myTheme.title = {
+                    style: {
+                        fontSize: '20px',
+                        fontfamily: '"Georgia", "Verdana", sans-serif',
+                        fontWeight: 'bold',
+                        color: '#000000'
+                    }
+                }
+                
+                chart9Options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Creating a new theme'
+                    },
+                    series: [{
+                        name: 'Bar #1',
+                        data: [1,2,3,4]
+                    }, {
+                        name: 'Bar #2',
+                        data: [1,2,3,4]
+                    }, {
+                        name: 'Bar #3',
+                        data: [1,2,3,4]
+                    }, {
+                        name: 'Bar #4',
+                        data: [1,2,3,4]
+                    }, {
+                        name: 'Bar #5',
+                        data: [1,2,3,4]
+                    }]
+                };
+                
+                Highcharts.setOptions(myTheme);
+                $('#example9').highcharts(chart9Options);
+                
+                // --- Creating a new theme ---
+                var SpiderWebChart = function (options) {
+                    // create options if they don't exist
+                    var modifiedOptions = options || {};
+                    
+                    // create a chart option if it does not exist
+                    modifiedOptions.chart = modifiedOptions.chart || {};
+                    modifiedOptions.chart.polar = true;
+                    
+                    // create an xAxis option if it does not exist
+                    modifiedOptions.xAxis = modifiedOptions.xAxis || {};
+                    modifiedOptions.xAxis.tickmarkPlacement = 'on';
+                    modifiedOptions.xAxis.lineWidth = 0;
+
+                    // create a yAxis option if it does not exist
+                    modifiedOptions.yAxis = modifiedOptions.xAxis || {};
+                    modifiedOptions.yAxis.gridLineInterpolation = 'polygon';
+                    modifiedOptions.yAxis.lineWidth = 0;
+                    
+                    return new Highcharts.Chart(modifiedOptions);
+                };
+                
+                var chart = SpiderWebChart({
+                    chart: {
+                        renderTo: 'example10'
+                    },
+                    title: {
+                        text: 'Creating spiderweb graphs for comparison'
+                    },
+                    xAxis: {
+                       categories: ["Strength", "Speed", "Defense"]
+                    },
+                    series: [{
+                        name: 'Fighter',
+                        data: [10, 1, 5],
+                        pointPlacement: 'on'
+                    }, {
+                        name: 'Rogue',
+                        data: [5, 10, 1],
+                        pointPlacement: 'on'
+                    }]
+                });
+            });
+        </script>        
+    </body>
+</html>

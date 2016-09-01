@@ -1,0 +1,12 @@
+{
+    "chart": {
+        "type": "bar"
+    },
+    "title": {
+        "text": "Exporting images to different formats"
+    },
+    "series": [{
+        "name": "Bar #1",
+        "data": [1,2,3,4]
+    }]
+}

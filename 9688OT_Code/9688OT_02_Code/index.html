@@ -1,0 +1,460 @@
+<html>
+    <head>
+        <title>Chapter 2 - Processing Data</title>
+        
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example2a'></div>
+            <div class='example' id='example2b'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example3'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example4'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example5a'></div>
+            <div class='example' id='example5b'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example6a'></div>
+            <div class='example' id='example6b'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example7'></div>
+        </div>
+                
+        <!-- Include the verbose version of jQuery -->
+        <script src='./bower_components/jquery/jquery.js'></script>
+        
+        <!-- Include the verbose version of highcharts -->
+        <script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+        
+        <script src='./bower_components/highcharts/modules/exporting.src.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                // --- Working with different data formats ---
+                var chart1Options = {
+                    chart: {
+                        type: 'bar'
+                    },
+                    exporting: {
+                        enabled: true,
+                        url: 'http://localhost:8889/'
+                    },
+                    title: {
+                        text: 'Working with different data formats'
+                    },
+                    series: [{
+                        name: 'Array format',
+                        data: [1,2,3]
+                    }, {
+                        name: 'Array of arrays format',
+                        data: [
+                            [0,2],
+                            [1,3],
+                            [2,1],
+                        ]
+                    }, {
+                        name: 'Array of objects format',
+                        data: [{
+                            x: 0,
+                            y: 3
+                        }, {
+                            x: 1,
+                            y: 1
+                        }, {
+                            x: 2,
+                            y: 2
+                        }]
+                    }]
+                };
+                $('#example1').highcharts(chart1Options)
+
+                // --- Using AJAX for polling charts ---
+                var chart2aOptions = {
+                    chart: {
+                        type: 'bar',
+                        events: {
+                            load: function () {
+                                var self = this;
+                                setInterval(function() {
+                                    $.getJSON('/ajax/series', function(data) {
+                                        var series = self.series[0];
+                                        series.setData(data);
+                                    });
+                                }, 1000);
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Using AJAX for polling charts'
+                    },
+                    series: [{
+                        name: 'AJAX data (series)',
+                        data: []
+                    }]
+                };
+                $('#example2a').highcharts(chart2aOptions);
+                
+                var chart2bOptions = {
+                    chart: {
+                        type: 'spline',
+                        events: {
+                            load: function () {
+                                var self = this;
+                                setInterval(function() {
+                                    $.getJSON('/ajax/point', function(data) {
+                                        var series = self.series[0];
+                                        var redrawVal = true;
+                                        var shiftVal = false;
+                                        if (series.data && series.data.length > 10) {
+                                            shiftVal = true;
+                                        }
+                                        series.addPoint(data, redrawVal, shiftVal);
+                                    });
+                                }, 1000);
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Using AJAX for polling charts'
+                    },
+                    series: [{
+                        name: 'AJAX data (points)',
+                        data: []
+                    }]
+                };
+                $('#example2b').highcharts(chart2bOptions);
+
+                // --- Using WebSockets for realtime updates ---
+                var chart3Options = {
+                    chart: {
+                        type: 'spline',
+                        events: {
+                            load: function () {
+                                var self = this;
+                                var connection = new WebSocket('ws://localhost:8001/websocket')
+                                connection.onmessage = function(event) {
+                                    var data = JSON.parse(event.data);
+                                    var series = self.series[0];
+                                    var redrawVal = true;
+                                    var shiftVal = false;
+                                    if (series.data && series.data.length > 10) {
+                                        shiftVal = true;
+                                    }
+                                    series.addPoint(data, redrawVal, shiftVal);
+                                };
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Using WebSockets for realtime updates'
+                    },
+                    xAxis: {
+                        type: 'datetime'
+                    },
+                    series: [{
+                        name: 'Websockets data (points)',
+                        data: []
+                    }]
+                };
+                $('#example3').highcharts(chart3Options);
+            
+                // --- Drilling Down and Filtering Data ---
+                var chart4;
+                var redrawChart = function(name, categories, data) {
+                    chart4.xAxis[0].setCategories(categories, false);
+                    chart4.series[0].remove(false);
+                    chart4.addSeries({
+                        name: name,
+                        data: data,
+                    });
+                    chart4.redraw();
+                }
+                
+                var chart4Data = [{
+                    y: 50,
+                    category: 'IE Users',
+                    categories: [
+                        'IE 10', 'IE 9', 'IE 8', 'IE 7'
+                    ],
+                    data: [{
+                        y: 25,
+                        name: 'IE 10'
+                    }, {
+                        y: 55,
+                        name: 'IE 9'
+                    }, {
+                        y: 15,
+                        name: 'IE 8'
+                    }, {
+                        y: 5,
+                        name: 'IE 7'
+                    }]
+                }, {
+                    y: 30,
+                    category: 'Chrome Users',
+                    categories: ['Most recent', 'Older versions'],
+                    data: [{
+                        y: 95,
+                        name: 'Most recent'
+                    }, {
+                        y: 5,
+                        name: 'Older versions'
+                    }]
+                }, {
+                    y: 20,
+                    category: 'FF Users',
+                    categories: ['Most recent', 'Older versions'],
+                    data: [{
+                        y: 90,
+                        name: 'Most recent'
+                    }, {
+                        y: 10,
+                        name: 'Older versions'
+                    }]
+                }];
+                var chart4Categories = ['IE Users', 'Chrome Users', 'FF Users'];
+                var chart4Name = 'Drilling Down and Filtering Data';
+                
+                var chart4Options = {
+                    chart: {
+                        renderTo: 'example4',
+                        type: 'column'
+                    },
+                    title: {
+                        text: chart4Name
+                    },
+                    xAxis: {
+                        categories: chart4Categories
+                    },
+                    series: [{
+                        name: chart4Name,
+                        data: chart4Data
+                    }],
+                    plotOptions: {
+                        column: {
+                            point: {
+                                events: {
+                                    click: function () {
+                                        if (this.categories) {
+                                            redrawChart(this.category, this.categories, this.data);
+                                        } else {
+                                            redrawChart(chart4Name, chart4Categories, chart4Data);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+                chart4 = new Highcharts.Chart(chart4Options);
+                
+                // --- Using CSV, XML, or JSON with Highcharts ---
+                var chart5aOptions = {
+                    chart: {
+                        type: 'bar',
+                        events: {
+                            load: function () {
+                                var self = this;
+                                setInterval(function() {
+                                    $.ajax('/xml/series', {
+                                        dataType: 'xml',
+                                        success: function(data) {
+                                            var series = self.series[0];
+                                            var xmlData = [];
+                                            $(data).find('row').each(function(idx, elem) {
+                                                var y = parseInt($(elem).find('y').text());
+                                                xmlData.push(y);
+                                            });
+                                            series.setData(xmlData);
+                                        }
+                                    });
+                                }, 1000);
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Using CSV, XML, or JSON with Highcharts'
+                    },
+                    series: [{
+                        name: 'XML Data',
+                        data: []
+                    }]
+                };
+                $('#example5a').highcharts(chart5aOptions);
+                
+                var chart5bOptions = {
+                    chart: {
+                        type: 'spline',
+                        events: {
+                            load: function () {
+                                var self = this;
+                                setInterval(function() {
+                                    $.ajax('/csv/series', {
+                                        dataType: 'text',
+                                        success: function(data) {
+                                            var series = self.series[0];
+                                            var explodedData = data.split(',')
+                                            
+                                            for (var i=0; i < explodedData.length; i++) {
+                                                explodedData[i] = parseInt(explodedData[i]);
+                                            }
+                                            
+                                            series.setData(explodedData);
+                                        }
+                                    });
+                                }, 1000);
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Using CSV, XML, or JSON with Highcharts'
+                    },
+                    series: [{
+                        name: 'CSV Data',
+                        data: []
+                    }]
+                };
+                $('#example5b').highcharts(chart5bOptions);
+                
+                // --- Cross-domain Data (JSONP) ---
+                var chart6aOptions = {
+                    chart: {
+                        type: 'bar',
+                        events: {
+                            load: function () {
+                                var self = this;
+                                setInterval(function() {
+                                    $.ajax('/jsonp/series', {
+                                        dataType: 'jsonp',
+                                        success: function(data) {
+                                            var series = self.series[0];
+                                            series.setData(data);
+                                        }
+                                    });
+                                }, 1000);
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Cross-domain Data (JSONP)'
+                    },
+                    series: [{
+                        name: 'JSONP data (series)',
+                        data: []
+                    }]
+                };
+                $('#example6a').highcharts(chart6aOptions);
+                
+                var chart6bOptions = {
+                    chart: {
+                        type: 'spline',
+                        events: {
+                            load: function () {
+                                var self = this;
+                                setInterval(function() {
+                                    $.ajax('/jsonp/point', {
+                                        dataType: 'jsonp',
+                                        success: function(data) {
+                                            var series = self.series[0];
+                                            var redrawVal = true;
+                                            var shiftVal = false;
+                                            if (series.data && series.data.length > 10) {
+                                                shiftVal = true;
+                                            }
+                                            series.addPoint(data, redrawVal, shiftVal);
+                                        }
+                                    });
+                                }, 1000);
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Cross-domain Data (JSONP)'
+                    },
+                    series: [{
+                        name: 'JSONP Data (points)',
+                        data: []
+                    }]
+                };
+                $('#example6b').highcharts(chart6bOptions);
+                
+                // --- Handling Dates ---
+                var chart7Data = [
+                    ["January 1, 2013", 2.314],
+                    ["March 17, 2013", 4.2],
+                    ["April 5, 2013", 3.141592],
+                ];
+                
+                var chart7Options = {
+                    title: {
+                        text: 'Handling Dates',
+                        type: 'spline'
+                    },
+                    xAxis: {
+                        type: 'datetime'
+                    },
+                    series:[{
+                        name: 'Timestamps',
+                        data: [
+                            [1356998400000, 3.141592],
+                            [1363478400000, 2.314],
+                            [1365120000000, 4.2]
+                        ]
+                    }, {
+                        name: 'UTC dates',
+                        data: [
+                            [Date.UTC(2013, 0, 1), 4.2],
+                            [Date.UTC(2013, 2, 17), 3.14159],
+                            [Date.UTC(2013, 3, 5), 2.314]
+                        ]
+                    }, {
+                        name: 'Parsed dates',
+                        data: (function () {
+                            var revisedData = [];
+                            var elem;
+                            for(var i = 0; i < chart7Data.length; i++) {
+                                elem = chart7Data[i];
+                                revisedData.push([Date.parse(elem[0]), elem[1]]);
+                            }
+                            return revisedData;
+                        })()
+                    }]
+                };
+                $('#example7').highcharts(chart7Options);
+            });
+            
+        </script>        
+    </body>
+</html>

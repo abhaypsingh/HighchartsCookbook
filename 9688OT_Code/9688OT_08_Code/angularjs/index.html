@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+    <head>
+        <script src='./bower_components/jquery/jquery.js'></script> 
+        <script src='./bower_components/highcharts/highcharts.src.js'></script> 
+        <script src='./bower_components/angular/angular.js'></script> 
+        <script src='./bower_components/highcharts-ng/dist/highcharts-ng.js'></script> 
+        <script src='./example.js'></script>
+        
+        <style type='text/css'>
+            .example {
+                clear: both;
+            }
+        
+            .container {
+                width: 300px;
+                float: left;
+            }
+            
+            .controls {
+                padding: 20px;
+            }
+
+            input.title {
+                width: 150px;
+            }
+            
+            input {
+                width: 50px;
+                padding: 6px;
+            }
+            
+            span {
+                display: inline-block;
+                width: 30px;
+            }
+        </style>
+    </head>
+    
+    <body ng-app="example">
+        <div ng-controller='ctrl'>
+            <div class='example'>
+                <div class='container'>
+                    <highchart id='example1' config='config'></highchart>
+                </div>
+                <div class='controls'>
+                    <input ng-model='config.title.text' class='title'><br/>
+                    <span>Yes:</span> <input type="number" ng-model='config.series[0].data[0]'><br/>
+                    <span>No:</span> <input type="number" ng-model='config.series[0].data[1]'>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

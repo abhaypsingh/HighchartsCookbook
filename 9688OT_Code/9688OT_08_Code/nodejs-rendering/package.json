@@ -1,0 +1,10 @@
+{
+  "name": "highcharts-cookbook-nodejs",
+  "description": "An example application for using highcharts with nodejs (specifically, the express framework).",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "^3.4",
+    "node-highcharts-exporter": "0.0.5"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "highcharts-cookbook-chapter-8",
+  "dependencies": {
+    "highcharts": "~3.0",
+    "jquery": "^1.9",
+    "qunit": "~1.14.0"
+  }
+}

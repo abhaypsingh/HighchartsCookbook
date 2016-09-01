@@ -1,0 +1,9 @@
+{
+  "name": "highcharts-cookbook-chapter-12",
+  "version": "0.0.0",
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "express": "~3.4.7",
+    "twitter": "~0.2.5"
+  }
+}

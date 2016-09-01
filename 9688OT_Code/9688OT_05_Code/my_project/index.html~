@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Chapter 5 - Integrating with Ext JS</title>
+        
+        <!-- Include default stylesheets-->
+        <link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all.css">
+        
+        <!-- Include the core JS in a developer friendly format -->
+        <script type="text/javascript" src="extjs/ext-dev.js"></script>
+        
+        <!-- Include Highcharts, jQuery; Not provided by ExtJS extension -->
+        <script type="text/javascript" src="resources/jquery.dev.js"></script>
+        <script type="text/javascript" src="resources/highcharts.src.js"></script>
+        <script type="text/javascript" src="resources/highcharts-more.src.js"></script>
+        
+        <!-- Include our application -->
+        <script type="text/javascript" src="app.js"></script>
+    </head>
+
+    <body>
+    </body>
+</html>

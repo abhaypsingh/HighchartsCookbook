@@ -1,0 +1,198 @@
+<html>
+    <head>
+        <title>Chapter 9 - Extending Highcharts - Examples</title>
+        
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+                min-width: 300px;
+                min-height: 300px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .relative {
+                position: relative;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example2'></div>
+        </div>
+        
+        <!-- Include the verbose version of jQuery -->
+        <script src="./bower_components/jquery/jquery.js"></script>
+                
+        <!-- Include the verbose version of highcharts -->
+        <script src="./bower_components/highcharts/highcharts.src.js"></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src="./bower_components/highcharts/highcharts-more.src.js"></script>
+
+        <!-- Include our extension -->
+        <script src='./myExtension.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            // --- Wrapping existing functions ---
+            (function(H) {
+                // Fix for incorrect image renderer function
+                H.wrap(
+                    H.Renderer.prototype,
+                    'image',
+                    function(original_fn) {
+                        var passed_arguments,
+                            first_argument,
+                            original_arguments;
+                        
+                        original_arguments = Array.prototype.slice.call(
+                            arguments, 1
+                        );
+                        first_argument = original_arguments[0];
+                        
+                        if (typeof first_argument === 'object') {
+                            passed_arguments = [];
+                            passed_arguments.push(first_argument.source);
+                            passed_arguments.push(first_argument.x);
+                            passed_arguments.push(first_argument.y);
+                            passed_arguments.push(first_argument.width);
+                            passed_arguments.push(first_argument.height);
+                            
+                        } else {
+                            passed_arguments = original_arguments;
+                        }
+                        
+                        return original_fn.apply(this, passed_arguments);
+                    }
+                );
+            
+                var ColumnSeries = H.seriesTypes['column'];
+                var PictoSeries = H.extendClass(ColumnSeries, {
+                    drawPoints: function() {
+                        var series = this,
+			                options = series.options,
+			                renderer = series.chart.renderer,
+			                shapeArgs;
+
+		                $.each(series.points, function (index, point) {
+			                var plotY = point.plotY,
+				                graphic = point.graphic,
+				                graphicArgs,
+				                unitHeight,
+				                remainder;
+
+			                if (plotY !== undefined && !isNaN(plotY) && point.y !== null) {
+				                shapeArgs = point.shapeArgs;
+				                unitHeight = shapeArgs.unitHeight || 1
+				
+				                if (graphic) {
+					                stop(graphic);
+					                graphic.animate(merge(shapeArgs));
+
+				                } else {
+				                    for(var units=0; units < shapeArgs.height; units += unitHeight) {
+				                        graphicArgs = $.extend({}, shapeArgs, {
+				                            'height': unitHeight,
+				                            'y': shapeArgs.y + units
+				                        });
+				                        
+				                        point.graphic = graphic = renderer[point.shapeType](graphicArgs)
+						                    .attr(point.pointAttr[point.selected ? 'select' : ''])
+						                    .add(series.group)
+						                    .shadow(options.shadow, null, options.stacking && !options.borderRadius);
+				                    }
+				                }
+
+			                } else if (graphic) {
+				                point.graphic = graphic.destroy();
+			                }
+		                });
+                    },
+                
+                    translate: function() {
+                        var series = this;
+                    
+                        // call translate normally
+                        ColumnSeries.prototype.translate.apply(this, arguments);
+                        
+                        // Fix shape arguments
+                        H.each(series.points, function (point) {
+                            point.shapeType = 'image',
+                            point.shapeArgs = {
+                                source: series.options.image,
+                                unitHeight: series.options.unitHeight,
+                                width: point.shapeArgs.width,
+                                height: point.shapeArgs.height,
+                                x: point.shapeArgs.x,
+                                y: point.shapeArgs.y
+                            };
+                        });
+                    }
+                });
+                H.seriesTypes.picto = PictoSeries;
+            }(Highcharts));
+        
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                var chart1Options = {
+                    title: {
+                        text: 'Creating your first chart'
+                    },
+                    series: [{
+                        image: 'http://cdn-img.easyicon.net/png/11035/1103574.gif',
+                        unitHeight: 32, // NEW: corresponds to image height, pixels
+                        type: 'picto',
+                        name: 'Bar #1',
+                        data: [0.5, 1,2,3,4, 4.5] // NEW
+                        //data: [1,2,3,4] // NEW
+                    }]
+                };
+                
+                $('#example1').highcharts(chart1Options);
+                
+                var chart2Options = {
+                    title: {
+                        text: 'SpiderWebGraph'
+                    },
+                    series: [{
+                        name: 'Bar #1',
+                        data: [1,2,3,4]
+                    }]
+                };
+                
+                $('#example2').spiderwebchart(chart2Options);
+                
+                
+                // Minifying your code
+                /*
+                sudo npm install uglify-js -g
+                uglifyjs file -o filename
+                https://github.com/mishoo/UglifyJS2#usage
+                */
+                
+                // Packaging your extension
+                /*
+                Wrap everything in an anonymous immediate function... anything else?
+                Maybe also making it useable with Jquery, as an example (e.g. including a plugin adapter?)
+                */
+                
+                
+            });
+        </script>        
+    </body>
+</html>

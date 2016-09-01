@@ -1,0 +1,13 @@
+Setup Instructions
+==================
+
+Client-side setup
+-----------------
+1. Install bower (http://bower.io)
+2. From the same folder that contains `bower.json`, run the following command to install any necessary JavaScript packages:
+
+    bower install
+
+Running the examples
+--------------------
+1. Open `index.html` or `test.html`

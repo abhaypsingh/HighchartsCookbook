@@ -1,0 +1,34 @@
+<html> 
+    <head> 
+    </head> 
+    <body> 
+        <div id='example'></div> 
+        <script src='./js/jquery/jquery.js'></script> 
+        <script src='./js/highcharts/highcharts.src.js'></script>
+        <script src='./js/highcharts/modules/exporting.src.js'></script>
+        
+        <script type='text/javascript'> 
+            $(document).ready(function() { 
+                var options = { 
+                    chart: { 
+                        type: 'bar'
+                    }, 
+                    title: { 
+                        text: 'NodeJS with PhantomJS for Export' 
+                    },
+                    exporting: {
+                        enabled: true,
+                        url: 'http://localhost:8888/generate'
+                    },
+                    series: [{ 
+                        name: 'Simple chart', 
+                        data: [1,2,3] 
+                    }] 
+                }; 
+                var chart = $('#example').highcharts(options).highcharts();
+                
+                // replace a button?
+            }); 
+        </script> 
+    </body> 
+</html>

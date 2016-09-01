@@ -1,0 +1,8 @@
+Setup Instructions
+------------------
+1. Install bower (http://bower.io)
+2. From the same folder that contains `bower.json`, run the following command to install any necessary JavaScript packages:
+
+    bower install
+
+3. Open `index.html`

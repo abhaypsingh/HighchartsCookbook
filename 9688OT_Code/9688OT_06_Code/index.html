@@ -1,0 +1,351 @@
+<html>
+    <head>
+        <title>Chapter 6 - Integrating with JQuery - Examples</title>
+        <link rel="stylesheet" href="./bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css" />
+        <link rel="stylesheet" href="./bower_components/jquery-ui/themes/ui-lightness/jquery.ui.theme.css" />
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+                min-width: 300px;
+                min-height: 300px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .master {
+                width: 300px;
+                height: 100px;
+            }
+            
+            .short {
+                height: 200px;
+            }
+            
+            .detail {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .tooltip {
+                border: 1px solid #666;
+                background: #fff;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            
+            .relative {
+                position: relative;
+            }
+            
+            .clear {
+                clear: both;
+            }
+            
+            .no-float {
+                float: none;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+            
+            #textInput {
+                position: absolute;
+                top: 220px;
+                left: 20px;
+                width: 300px;
+                height: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example2'
+                data-chart='{"type": "column"}'
+                data-title='{"text": "Using data-attributes to load charts"}'
+                data-series='[{"name": "2^x", "data": [1,2,4,8]}, {"name": "2^(x+1)", "data": [2,4,8,16]}]'
+            ></div
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example3'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example4'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example5'></div><br/>
+            <input type='text' id='new_value' />
+            <input type='submit' id='submit_value' value="Replace value"/>
+        </div>
+        
+        <div class='example-container'>
+            <div id='tabs'>
+                <ul>
+                    <li><a href="#example6a">Chart 1</a></li>
+                    <li><a href="#example6b">Chart 2</a></li>
+                </ul>
+                <div class='no-float example' id='example6a'></div>
+                <div class='no-float example' id='example6b'></div>
+            </div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example7'></div>
+            <div id='slider' class='clear'></div><br/>
+            <button id='increase' class='clear'>Increase</button>
+            <button id='decrease'>Decrease</button>
+        </div>
+        
+        <!-- Include the verbose version of jQuery -->
+        <script src='./bower_components/jquery/jquery.js'></script>
+        
+        <!-- Include jQuery UI -->
+        <script src="./bower_components/jquery-ui/ui/jquery-ui.js"></script>
+        
+        <!-- Include the verbose version of highcharts -->
+        <script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            var x = 'test';
+        
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                // --- Creating a simple poll ---
+                var chart1Options = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Creating Charts with JQuery'
+                    },
+                    subtitle: {
+                        text: 'Look familiar?'
+                    },
+                    series: [{
+                        name: '2^x',
+                        data: [1,2,4,8]
+                    }, {
+                        name: '2^(x+1)',
+                        data: [2,4,8,16]
+                    }]
+                };
+                
+                $('#example1').highcharts(chart1Options);
+                
+                // --- Using data-attributes to load charts ---
+                var chart2Settings = $('#example2').data();
+                $('#example2').highcharts(chart2Settings);
+                
+                // --- Binding events using $.on() ---
+                // what events can we bind to the chart?
+                var chart3Options = {
+                    chart: {
+                        type: 'line'
+                    },
+                    title: {
+                        text: 'Binding events using $.on()'
+                    },
+                    series: [{
+                        name: '1/2 x',
+                        data: [0, 0.5, 1, 1.5]
+                    }, {
+                        name: 'x',
+                        data: [0, 1, 2, 3]
+                    }, {
+                        name: '2x',
+                        data: [0, 2, 4, 6]
+                    }]
+                };
+                
+                var chart3 = $('#example3').highcharts(chart3Options).highcharts();
+                
+                // Note: the only events that will work are the ones listed
+                // in the API: http://api.highcharts.com/highcharts
+                // bind an event to the chart being clicked
+                $(chart3).on('click', function() {
+                    console.log('Chart clicked!', arguments);
+                });
+                
+                // bind an event to the 1st series being shown
+                $(chart3.series[0]).on('show', function() {
+                    console.log('1st series showed!', arguments);
+                });
+                
+                // --- Handling user interaction ---
+                // Similar to above, but using .click, etc instead of bind
+                var chart4Options = {
+                    chart: {
+                        type: 'spline'
+                    },
+                    title: {
+                        text: 'Binding events using $.on()'
+                    },
+                    series: [{
+                        name: 'x^2',
+                        data: [0, 1, 4, 9, 16, 25]
+                    }, {
+                        name: '-(x^2) + 30',
+                        data: [30, 29, 26, 21, 14, 5]
+                    }]
+                };
+                
+                var chart4 = $('#example4').highcharts(chart4Options).highcharts();
+                
+                $(chart4).click(function() {
+                    console.log('Chart clicked with .click handler!');
+                });
+                
+                // Can also use .bind (for backwards compatibility)
+                $(chart4.series[0].data[0]).bind('mouseOver', function() {
+                    console.log('Mouseover on first point!');
+                });
+                
+                // Can apply to all points using .each
+                $(chart4.series[1].data).each(function(index, point) {
+                    $(point).click(function() {
+                        console.log('Clicked on point!');
+                    });
+                });
+                
+                // --- Updating a chart on the backend ---
+                var chart5Options = {
+                    chart: {
+                        type: 'spline',
+                        events: {
+                            load: function () {
+                                var self = this;
+                                setInterval(function() {
+                                    $.getJSON('/ajax/point', function(data) {
+                                        var series = self.series[0];
+                                        var redrawVal = true;
+                                        var shiftVal = false;
+                                        if (series.data && series.data.length > 10) {
+                                            shiftVal = true;
+                                        }
+                                        series.addPoint(data, redrawVal, shiftVal);
+                                    });
+                                }, 1000);
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Updating a chart on the backend'
+                    },
+                    series: [{
+                        name: 'AJAX data (points)',
+                        data: []
+                    }]
+                };
+                
+                $('#example5').highcharts(chart5Options);
+                
+                $('#submit_value').on('click', function(event) {
+                    var newValue = $('#new_value').val();
+                
+                    event.preventDefault();
+                    $.ajax({
+                        url: '/ajax/point',
+                        contentType: 'application/json',
+                        type: 'POST',
+                        data: JSON.stringify({y: newValue})
+                    })
+                })
+                
+                // --- Using Jquery UI Tabs and Highcharts ---
+                var chart6aOptions = {
+                    chart: {
+                        type: 'areaspline'
+                    },
+                    title: {
+                        text: 'Tab 1 Chart'
+                    },
+                    series: [{
+                        name: 'x^2',
+                        data: [0, 1, 4, 9, 16, 25]
+                    }, {
+                        name: '-(x^2) + 30',
+                        data: [30, 29, 26, 21, 14, 5]
+                    }]
+                };
+                
+                var chart6bOptions = {
+                    chart: {
+                        type: 'area'
+                    },
+                    title: {
+                        text: 'Tab 2 Chart'
+                    },
+                    series: [{
+                        name: '1/2 x',
+                        data: [0, 0.5, 1, 1.5]
+                    }, {
+                        name: 'x',
+                        data: [0, 1, 2, 3]
+                    }, {
+                        name: '2x',
+                        data: [0, 2, 4, 6]
+                    }]
+                };
+                
+                $('#example6a').highcharts(chart6aOptions);
+                $('#example6b').highcharts(chart6bOptions);
+                
+                $('#tabs').tabs();
+                
+                // --- Modifying charts using Jquery UI Controls ---
+                var chart7Options = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Modifying charts using Jquery UI Controls'
+                    },
+                    series: [{
+                        name: 'Slider',
+                        data: [0]
+                    }, {
+                        name: 'Button',
+                        data: [0]
+                    }]
+                };
+                
+                var chart7 = $('#example7').highcharts(chart7Options).highcharts();
+                $('#slider').slider({
+                    min: 0,
+                    max: 100,
+                    step: 10,
+                    slide: function (event, ui) {
+                        chart7.series[0].setData([ui.value]);
+                    }
+                });
+                
+                $('#increase').button().click(function() {
+                    var data = chart7.series[1].data[0].y || 0;
+                    chart7.series[1].setData([data += 1]);
+                });
+                $('#decrease').button().click(function() {
+                    var data = chart7.series[1].data[0].y || 0;
+                    chart7.series[1].setData([data -= 1]);
+                });
+            });
+        </script>
+    </body>
+</html>

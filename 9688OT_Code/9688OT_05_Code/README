@@ -1,0 +1,35 @@
+Setup Instructions
+==================
+
+Server-side setup
+----------------------------
+1. Install Python 2.7 (http://www.python.org/getit/)
+2. Install pip (http://www.pip-installer.org/en/latest/installing.html)
+3. Run the following command in the same folder that contains `requirements.txt` (if that file exists)
+
+    pip install requirements.txt
+    
+4. Run the appropriate application (if need be):
+
+    python server.py
+
+Client-side setup
+-----------------
+1. Download required files:
+
+    - jQuery (http://jquery.com/download/)
+    - Highcharts (http://www.highcharts.com/download)
+    - ExtJS 4.2.1 (https://www.sencha.com/products/extjs/download/)
+    - ExtJS Highcharts Extension (https://market.sencha.com/extensions/highcharts)
+
+2. Copy required files to appropriate locations:
+
+    - `jquery.dev.js` to `my_project/resources`
+    - `highcharts.src.js` to `my_project/resources`
+    - `highcharts-mote.src.js` to `my_project/resources`
+    - ExtJS to `my_project/extjs`
+    - ExtJS Highcharts Extension to `my_project/resources/Chart`
+
+Running the examples
+--------------------
+1. After running `server.py`, visit `http://localhost:8000/index.html`

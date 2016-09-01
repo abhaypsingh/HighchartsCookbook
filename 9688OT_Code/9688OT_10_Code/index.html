@@ -1,0 +1,422 @@
+<html>
+    <head>
+        <title>Chapter 10 - Math and Statistics - Examples</title>
+        
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+                min-width: 300px;
+                min-height: 300px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .relative {
+                position: relative;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+            
+            label {
+                width: 100px;
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div>
+            <label for='equation'>Equation:</label>
+            <input type='text' id='equation' placeholder='javascript (e.g. Math.pow(x, 2))'/><br/>
+            
+            <label for='maxX'>Max. X:</label>
+            <input type='text' id='maxX' placeholder='100'/><br/>
+            
+            <label for='minX'>Min. X:</label>
+            <input type='text' id='minX' placeholder='-100'/><br/>
+            
+            <label for='maxY'>Max. Y:</label>
+            <input type='text' id='maxY' placeholder='100'/><br/>
+            
+            <label for='minY'>Min. Y:</label>
+            <input type='text' id='minY' placeholder='-100'/><br/>
+            
+            <label for='resolution'>Resolution:</label>
+            <input type='text' id='resolution' placeholder='10'/>
+            
+            <input type='button' id='addSeries' value='Add Equation'/>
+            <input type='button' id='removeSeries' value='Erase All'/>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example2'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example3'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example4'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example5'></div>
+        </div>
+        
+        <!-- Include the verbose version of jQuery -->
+        <script src='./bower_components/jquery/jquery.js'></script>
+        
+        <!-- Include the verbose version of highcharts -->
+        <script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/rm-jstat/jstat.js'></script>
+        
+        <!-- Include Underscore -->
+        <script src='./bower_components/underscore/underscore.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                var dataFromEquation = function(config) {
+                    var config = config || {},
+                        equation = config.equation || function(x) {
+                            return x;
+                        },
+                        minX = parseInt(config.minX, 10) || -100,
+                        maxX = parseInt(config.maxX, 10) || 100,
+                        minY = parseInt(config.minY, 10) || -100,
+                        maxY = parseInt(config.maxY, 10) || 100,
+                        resolution = parseInt(config.resolution, 10) || 10,
+                        data = [];
+                    
+                    
+                    var data = [];
+                    
+                    for(var x = minX; x < maxX; x+=resolution) {
+                        data.push({
+                            'x': x,
+                            'y': equation(x)
+                        })
+                    }
+                    
+                    return data;
+                };
+                
+                var addSeries = function() {
+                    var equationStr = $('#equation').val(),
+                        minX = $('#minX').val(),
+                        maxX = $('#maxX').val(),
+                        minY = $('#minY').val(),
+                        maxY = $('#maxY').val(),
+                        resolution = $('#resolution').val();
+                        
+                    var equation = new Function('x', 'return ' + equationStr);
+                    
+                    $('#example1').highcharts().addSeries({
+                        name: equationStr,
+                        data: dataFromEquation({
+                            minX: minX,
+                            maxX: maxX,
+                            minY: minY,
+                            maxY: maxY,
+                            resolution: resolution,
+                            equation: equation
+                        })
+                    });
+                };
+                
+                var removeSeries = function() {
+                    var chart = $('#example1').highcharts();
+                
+                    while(chart.series.length > 0) {
+                        chart.series[0].remove(true);
+                    }
+                };
+            
+                var chart1Options = {
+                    chart: {
+                        zoomType: 'xy',
+                        type: 'spline'
+                    },
+                    title: {
+                        text: 'Plotting equations'
+                    },
+                    xAxis: {
+                        gridLineWidth: 1,
+                    },
+                    yAxis: {
+                        gridLineWidth: 1,
+                    },
+                    series: [{
+                        name: 'Default Equation',
+                        data: dataFromEquation({
+                            equation: function(x) {
+                                return Math.pow(x, 2);
+                            }
+                        })
+                    }]
+                };
+                
+                $('#example1').highcharts(chart1Options);
+                $('#addSeries').click(addSeries);
+                $('#removeSeries').click(removeSeries);
+                
+                var chart2Options = {
+                    chart: {
+	                    type: 'boxplot'
+	                },
+	                title: {
+                        text: 'Box Plots'
+                    },
+                    series: [{
+                        name: 'Sample #1',
+                        // [min, Q1, mean, Q3, max]
+                        data: [
+                            [0, 25, 50, 75, 100],
+                            [25, 30, 40, 100, 120]
+                        ]
+                    }]
+                };
+                
+                $('#example2').highcharts(chart2Options);
+                
+                // Create a `range` object; 100 points between -5 and 5
+                var range = jstat.seq(-5,5,100);
+                
+                // Create a `normal` curve for that range given:
+                // - a mean of 0.0
+                // - a standard deviation of 1.0
+                var dNorm = jstat.dnorm(range, 0.0, 1.0);
+                
+                // xAxis needs to match densities; zip together
+                var dNormPairs = _.zip(range, dNorm);
+                
+                var dNorm2 = jstat.dnorm(range, 1.0, 2.0);
+                var dNorm2Pairs = _.zip(range, dNorm2);
+                
+                var dlNorm = jstat.dlnorm(range, 0.0, 1.0);
+                var dlNormPairs = _.zip(range, dlNorm);
+
+                var chart3Options = {
+                    chart: {
+	                    type: 'spline',
+	                    zoomType: 'xy'
+	                },
+	                title: {
+                        text: 'Probability Density Functions (PDFs)'
+                    },
+                    series: [{
+                        name: 'Normal (0,1)',
+                        data: dNormPairs
+                    }, {
+                        name: 'Normal (1,2)',
+                        data: dNorm2Pairs
+                    }, {
+                        name: 'Log-Normal (0,1)',
+                        data: dlNormPairs
+                    }]
+                };
+                $('#example3').highcharts(chart3Options);
+
+                var samples = 10;
+                var rangeFn1 = _.partial(_.random, 1, 100);
+                var experiment1 = _.zip(
+                    _.times(samples, rangeFn1),
+                    _.times(samples, rangeFn1)
+                );
+                
+                var experiment2 = _.zip(
+                    _.times(samples, rangeFn1),
+                    _.times(samples, rangeFn1)
+                );
+                
+                var chart4Options = {
+                    chart: {
+	                    type: 'scatter',
+	                    zoomType: 'xy'
+	                },
+	                title: {
+                        text: 'Using Scatter Plots'
+                    },
+                    series: [{
+                        name: 'Experiment #1',
+                        data: experiment1
+                    }, {
+                        name: 'Experiment #2',
+                        data: experiment2
+                    }]
+                };
+                $('#example4').highcharts(chart4Options);
+                
+                var highs = [{
+                    'time': 1386306000000,
+                    'max': 17,
+                    '90%': 8,
+                    '75%': 5,
+                    '50%': 2,
+                    '25%': -1,
+                    '10%': -3,
+                    'min': -4
+                }, {
+                    'time': 1386392400000,
+                    'max': 17,
+                    '90%': 8,
+                    '75%': 5,
+                    '50%': 2,
+                    '25%': -1,
+                    '10%': -4,
+                    'min': -5
+                }, {
+                    'time': 1386478800000,
+                    'max': 10,
+                    '90%': 8,
+                    '75%': 5,
+                    '50%': 2,
+                    '25%': -1,
+                    '10%': -4,
+                    'min': -6
+                }];
+                
+                var lows = [{
+                    'time': 1386306000000,
+                    'max': 3,
+                    '90%': 2,
+                    '75%': 0,
+                    '50%': -4,
+                    '25%': -7,
+                    '10%': -10,
+                    'min': -14
+                }, {
+                    'time': 1386392400000,
+                    'max': 3,
+                    '90%': 2,
+                    '75%': 0,
+                    '50%': -4,
+                    '25%': -8,
+                    '10%': -11,
+                    'min': -11
+                }, {
+                    'time': 1386478800000,
+                    'max': 5,
+                    '90%': 2,
+                    '75%': 0,
+                    '50%': -4,
+                    '25%': -8,
+                    '10%': -11,
+                    'min': -15
+                }];
+                
+                var getExtremes = function(item) {
+                    return [
+                        item['time'],
+                        item['min'],
+                        item['max']
+                    ];
+                };
+                var highLines = _.map(highs, getExtremes);
+                var lowLines = _.map(lows, getExtremes);
+                
+                var highPercentiles = function(item) {
+                    return [
+                        item['time'],
+                        item['10%'],
+                        item['90%']
+                    ];
+                };
+                var highOuter = _.map(highs, highPercentiles);
+                var lowOuter = _.map(lows, highPercentiles);
+                
+                var q1q3 = function(item) {
+                    return [
+                        item['time'],
+                        item['25%'],
+                        item['75%']
+                    ];
+                };
+                var highInner = _.map(highs, q1q3);
+                var lowInner = _.map(lows, q1q3);
+                
+                var chart5Options = {
+                    chart: {
+	                    type: 'arearange',
+	                    zoomType: 'xy'
+	                },
+	                title: {
+                        text: 'Displaying Percentile Data'
+                    },
+                    xAxis: {
+                        type: 'datetime'
+                    },
+                    tooltip: {
+                        crosshairs: true,
+        		        shared: true,
+		                valueSuffix: 'C'
+        		    },
+                    series: [{
+                        id: 'highs',
+                        name: 'Highs',
+                        data: highLines,
+                        fillOpacity: 0.1,
+                        color: '#ff0000',
+                        zIndex: 0
+                    }, {
+                        name: '10% - 90%',
+                        linkedTo: 'highs',
+                        data: highOuter,
+                        lineWidth: 0,
+                        fillOpacity: 0.1,
+                        color: '#ff0000',
+                        zIndex: 1
+                    }, {
+                        name: '25% - 75%',
+                        linkedTo: 'highs',
+                        data: highInner,
+                        lineWidth: 0,
+                        fillOpacity: 0.1,
+                        color: '#ff0000',
+                        zIndex: 2
+                    }, {
+                        id: 'lows',
+                        name: 'Lows',
+                        data: lowLines,
+                        fillOpacity: 0.1,
+                        color: '#0000ff',
+                        zIndex: 3
+                    }, {
+                        name: '10% - 90%',
+                        linkedTo: 'lows',
+                        data: lowOuter,
+                        lineWidth: 0,
+                        fillOpacity: 0.1,
+                        color: '#0000ff',
+                        zIndex: 4
+                    }, {
+                        name: '25% - 75%',
+                        linkedTo: 'lows',
+                        data: lowInner,
+                        lineWidth: 0,
+                        fillOpacity: 0.1,
+                        color: '#0000ff',
+                        zIndex: 5
+                    }]
+                };
+                $('#example5').highcharts(chart5Options);
+            });
+        </script>        
+    </body>
+</html>

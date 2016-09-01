@@ -1,0 +1,802 @@
+<html>
+    <head>
+        <title>Chapter 3 - Handling User Interaction - Examples</title>
+        
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+                min-width: 300px;
+                min-height: 300px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .master {
+                width: 300px;
+                height: 100px;
+            }
+            
+            .short {
+                height: 200px;
+            }
+            
+            .detail {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .tooltip {
+                border: 1px solid #666;
+                background: #fff;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            
+            .relative {
+                position: relative;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+            
+            #textInput {
+                position: absolute;
+                top: 220px;
+                left: 20px;
+                width: 300px;
+                height: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div>
+            <div class='button-bar'>
+                Is it easy to make a poll?
+                <input type='button' value='Yes' id='example1-Yes'/>
+                <input type='button' value='No' id='example1-No'/>
+            </div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example2'></div>
+        </div>
+        <div class='example-container'>
+            <div class='detail' id='example3Detail'></div>
+            <div class='master' id='example3Master'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example4'></div>
+            <div class='button-bar'>
+                Group data: 
+                <input type='button' value='Chronologically' id='groupChrono'/>
+                <input type='button' value='By day' id='groupDay'/>
+                <input type='button' value='By hour' id='groupHour'/><br/>
+            </div>
+        </div>
+        <div class='example-container relative'>
+            <div class='example short' id='example5'></div>
+            <textarea id='textInput'>When you click on the chart, this will annotate the chart.</textarea>
+        </div>
+        <div class='example-container relative'>
+            <div class='example' id='example6'></div>
+            <div class='tooltip' id='customTooltip'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example7'></div>
+        </div>
+        <div class='example-container'>
+            <div class='example' id='example8'></div>
+        </div>
+        
+        <!-- Include the verbose version of jQuery -->
+        <script src='./bower_components/jquery/jquery.js'></script>
+        
+        <!-- Include the verbose version of highcharts -->
+        <script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+        
+        <!-- Include Underscore -->
+        <script src='./bower_components/underscore/underscore.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            var x = 'test';
+        
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                // --- Creating a simple poll ---
+                var chart1Options = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Creating a simple poll'
+                    },
+                    subtitle: {
+                        text: 'Is this easy?'
+                    },
+                    series: [{
+                        name: 'Yes',
+                        data: [0]
+                    }, {
+                        name: 'No',
+                        data: [0]
+                    }]
+                };
+                $('#example1').highcharts(chart1Options);
+                var chart1 = $('#example1').highcharts();
+                
+                // create voting function
+                var vote = function(event) {
+                    var $button = $(event.target),
+                        value = $button.attr('value'),
+                        series,
+                        data;
+                    
+                    // Figure out which series to use    
+                    series = (value === 'Yes') ? chart1.series[0] : chart1.series[1];
+                    
+                    // Get the data for that series
+                    votes = series.data[0].y || 0;
+                    
+                    votes += 1;
+                    
+                    // replace the existing data
+                    series.setData([votes]);
+                }
+                
+                // attach event handlers
+                $('#example1-Yes').click(vote);
+                $('#example1-No').click(vote);
+
+                // --- Making graphs zoomable ---
+                var chart2Options = {
+                    chart: {
+                        type: 'spline',
+                        zoomType: 'x'
+                    },
+                    title: {
+                        text: 'Making graphs zoomable'
+                    },
+                    xAxis: {
+                        minRange: 5 
+                    },
+                    series: [{
+                        name: 'y = -(x^2) + 100',
+                        data: (function() {
+                            var data = [],
+                                minX = -100,
+                                maxX = 100,
+                                x = minX,
+                                y;
+                            while (x < maxX) {
+                                y = 100 - Math.pow(x, 2);
+                                data.push([x,y]);
+                                x++;
+                            }
+                            
+                            return data;
+                        }())
+                    }]
+                };
+                $('#example2').highcharts(chart2Options);
+                
+                var detailChart; // need an external reference to this!
+                
+                // --- Creating master detail graphs ---
+                var createDetails = function(masterChart) {
+                    var detailOptions,
+                        detailData = [];
+                        
+                    detailData = masterChart.series[0].data;
+                    
+                    detailOptions = {
+                        chart: {
+                            type: 'spline',
+                            reflow: false,
+                            style: {
+                                position: 'absolute'
+                            },
+                            marginBottom: 100
+                        },
+                        title: {
+                            text: 'Creating master detail graphs'
+                        },
+                        yAxis: {
+                            title: {
+                                text: null
+                            }
+                        },
+                        series: [{
+                            name: 'y = x^3',
+                            data: detailData
+                        }]
+                    };
+                
+                    detailChart = $('#example3Detail').highcharts(detailOptions).highcharts();
+                };
+                
+                var chart2MasterOptions = {
+                    chart: {
+                        type: 'spline',
+                        zoomType: 'x',
+                        reflow: false,
+                        events: {
+                            selection: function(event) {
+                                var selection = event.xAxis[0];
+                                var xAxis = this.xAxis[0];
+                                var extremes = xAxis.getExtremes();
+                                var detailData = [];
+                                var max = selection.max;
+                                var min = selection.min;
+                                
+                                // mask unselected areas
+                                xAxis.removePlotBand('before-selected');
+                                xAxis.addPlotBand({
+                                    id: 'before-selected',
+                                    color: 'rgba(0, 0, 0, 0.2)',
+                                    from: extremes.min,
+                                    to: min
+                                });
+                                
+                                xAxis.removePlotBand('after-selected');
+                                xAxis.addPlotBand({
+                                    id: 'after-selected',
+                                    color: 'rgba(0, 0, 0, 0.2)',
+                                    from: max,
+                                    to: extremes.max
+                                });
+                                
+                                // get data for detail chart
+                                jQuery.each(this.series[0].data, function(i, point) {
+                                    // if the data is within our selection, add it to the details
+                                    if (min < point.x && point.x < max) {
+                                        detailData.push({
+                                            x: point.x,
+                                            y: point.y
+                                        });
+                                    }
+                                });
+                                
+                                detailChart.series[0].setData(detailData);
+                                
+                                // take no further actions
+                                // if we do not do this, there will be trouble
+                                return false;
+                            }
+                        }
+                    },
+                    title: {
+                        text: null // hide the title for the 'master' part
+                    },
+                    xAxis: {
+                        minRange: 5,
+                        plotBands: [{ // create initial bands
+                            id: 'before-selected',
+                            color: 'rgba(0, 0, 0, 0.2)',
+                            from: -100,
+                            to: -50
+                        }, {
+                            id: 'after-selected',
+                            color: 'rgba(0, 0, 0, 0.2)',
+                            from: 50,
+                            to: 100
+                        }],
+                        title: {
+                            text: null // hide xAxis title
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: null // hide yAxis title
+                        },
+                        labels: {
+                            enabled: false // hide yAxis labels
+                        },
+                    },
+                    tooltip: {
+                        formatter: function() {
+                            return false; // hide tooltip
+                        }
+                    },
+                    legend: {
+                        enabled: false // hide legend
+                    },
+                    credits: {
+                        enabled: false // hide credits
+                    },
+                    series: [{
+                        name: 'y = x^3',
+                        data: (function() {
+                            var data = [],
+                                minX = -100,
+                                maxX = 100,
+                                x = minX,
+                                y;
+                            while (x < maxX) {
+                                y = Math.pow(x, 3);
+                                data.push([x,y]);
+                                x++;
+                            }
+                            
+                            return data;
+                        }())
+                    }],
+                    plotOptions: {
+                        series: {
+                            enableMouseTracking: false // causes rendering issues
+                        }
+                    }
+                };
+                
+                // position the charts appropriately
+                
+                // position relatively so that absolute positioning is correct
+                $('#example3Master').parent().css('position', 'relative');
+                
+                $('#example3Master').css({
+                    position: 'absolute',
+                    top: 200,
+                    height: 100,
+                    width: '300px' // normally, we could use 100%, but can be tricky with container margins / padding
+                });
+                
+                $('#example3Master').highcharts(chart2MasterOptions, createDetails);
+                
+                // --- Slicing and dicing time data ---
+                var chart4Data = (function() {
+                    var data = [];
+                    var count = 0; // 1 data point per month for 5 years
+                    var startYear = 2001;
+                    var x, y, year, month, day, hour, minute;
+                    
+                    while (count < 60) {
+                        year  = startYear + Math.floor(count/12);
+                        month = count % 12;
+                        day   = 1 + Math.floor(Math.random()*28);
+                        hour  = Math.floor(Math.random()*23);
+                        minute= Math.floor(Math.random()*60);
+                        
+                        x = Date.UTC(year, month, day, hour, minute);
+                        y = Math.floor(Math.random()*100);                        
+                        
+                        data.push({x: x, y: y}); // slightly easier to work with
+                        count++;
+                    }
+                    
+                    return data;
+                }());
+                
+                var groupData = function (event) {
+                    var $button = $(event.target),
+                        groupedData,
+                        displayData,
+                        xAxisOptions,
+                        data = _.clone(chart4Data);
+                    
+                    switch ($button.attr('value')) {
+                        case 'Chronologically':
+                            xAxisOptions = {
+                                type: 'datetime'
+                            };
+                            displayData = {
+                                data: data
+                            };
+                            break;
+                        case 'By day':
+                            xAxisOptions = {
+                                type: 'category'
+                            };
+                            
+                            groupedData = _.groupBy(data, function(point) {
+                                return new Date(point.x).getUTCDay();
+                            });
+                            
+                            groupedData = _.chain(groupedData).map(function(value, index) {
+                                var y = _.chain(value).pluck('y').reduce(function(sum, num){
+                                    return sum + num;
+                                }).value(); 
+                                return {
+                                    y: y,
+                                    name: index
+                                }
+                            });
+                            
+                            displayData = {
+                                data: groupedData.value()
+                            }
+                            
+                            break;
+                        case 'By hour':
+                            xAxisOptions = {
+                                type: 'category'
+                            };
+                            
+                            groupedData = _.groupBy(data, function(point) {
+                                return new Date(point.x).getUTCHours();
+                            });
+                            
+                            groupedData = _.chain(groupedData).map(function(value, index) {
+                                var y = _.chain(value).pluck('y').reduce(function(sum, num){
+                                    return sum + num;
+                                }).value(); 
+                                return {
+                                    y: y,
+                                    name: index
+                                }
+                            });
+                            
+                            displayData = {
+                                data: groupedData.value()
+                            }
+                            break;
+                    }
+                    
+                    // update the chart with new data;
+                    chart4.xAxis[0].update(xAxisOptions);
+                    chart4.series[0].update(displayData);
+                };
+                
+                var chart4Options = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Slicing and dicing time data'
+                    },
+                    subtitle: {
+                        text: 'All changes conducted on original data'
+                    },
+                    xAxis: {
+                        type: 'datetime'
+                    },
+                    series: [{
+                        name: 'Random data',
+                        data: chart4Data
+                    }]
+                };
+                
+                // Hook up events to handle grouping / filtering
+                $('#groupChrono').on('click', groupData);
+                $('#groupDay').on('click', groupData);
+                $('#groupHour').on('click', groupData);
+                
+                var chart4 = $('#example4').highcharts(chart4Options).highcharts();
+                
+                // --- Annotate a chart ---
+                var chart5Options = {
+                    chart: {
+                        type: 'scatter',
+                        events: {
+                            click: function(event) {
+                                var x, y, text, box;
+                                
+                                // take whatever is in the textarea, clear annotate, and empty text box
+                                var content = $('#textInput').val();
+                                
+                                x = event.chartX;
+                                y = event.chartY;
+                                
+                                // add text
+                                text = this.renderer.text(content, x, y)
+                                    .attr({
+                                        zIndex: 2 // so that text is above background;
+                                    })
+                                    .add();
+                                
+                                // add border for text
+                                box = text.getBBox();
+                                this.renderer.rect(box.x - 5, box.y -5, box.width + 10, box.height + 10, 5)
+                                    .attr({
+                                        fill: '#ffffff',
+                                        stroke: 'gray',
+                                        'stroke-width': 1,
+                                        zIndex: 1 // So that background is below text
+                                    })
+                                    .add();
+                                
+                                // empty out the text box
+                                $('#textInput').val("");
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Annotate a chart'
+                    },
+                    series: [{
+                        name: 'Random data',
+                        data: (function() {
+                            var data = [],
+                                limit = 20,
+                                maxX = 100,
+                                maxY = 100,
+                                count = 0;
+                                
+                            while (count < limit) {
+                                data.push({
+                                    x: Math.random()*maxX,
+                                    y: Math.random()*maxY
+                                })
+                                count++;
+                            }
+                            
+                            return data;
+                        }())
+                    }],
+                    xAxis: {
+                        min: 0,
+                        max: 100
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: 100
+                    }
+                };
+                
+                $('#example5').highcharts(chart5Options);
+                
+                // --- Dynamic tooltips ---
+                var positionTooltip = function (chart, point) {
+                    var selectedPoint = (chart.getSelectedPoints() || [])[0],
+                        x, y;
+                
+                    // Stick the tooltip next to the selected point
+                    if (selectedPoint) {
+                        referencePoint = selectedPoint;
+                    } else {
+                        referencePoint = point;
+                    }
+                    
+                    x = referencePoint.plotX + chart.plotLeft + 25;
+                    y = referencePoint.plotY + chart.plotTop + 25;
+                    $('#customTooltip').css({
+                        position: 'absolute',
+                        top: y,
+                        left: x
+                    });
+                };
+                
+                var buttonTemplate = _.template('<input type="button" class="<%= cls %>" value="<%= value %>"/>');
+                var coordsTemplate = _.template('(<%= x %>, <%= y %>)');
+                var updateTooltipText = function(x, y) {
+                    var tooltipString = coordsTemplate({x: x, y: y}) + '<br/>';
+                    tooltipString += buttonTemplate({cls: 'modifyValue', value: '+'});
+                    tooltipString += buttonTemplate({cls: 'modifyValue', value: '-'}) + '<br/>';
+                    tooltipString += buttonTemplate({cls: 'removePoint', value: 'Remove Point?'});
+                    
+                    $('#customTooltip').html(tooltipString);
+                };
+
+                var chart6Options = {
+                    chart: {
+                        type: 'scatter'
+                    },
+                    title: {
+                        text: 'Dynamic Tooltips'
+                    },
+                    series: [{
+                        name: 'Random data',
+                        data: (function() {
+                            var data = [],
+                                limit = 20,
+                                maxX = 100,
+                                maxY = 100,
+                                count = 0;
+                                
+                            while (count < limit) {
+                                data.push({
+                                    x: Math.random()*maxX,
+                                    y: Math.random()*maxY
+                                })
+                                count++;
+                            }
+                            
+                            return data;
+                        }())
+                    }],
+                    xAxis: {
+                        min: 0,
+                        max: 100
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: 100
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            stickyTracking: true,
+                            allowPointSelect: true,
+                            point: {
+                                events: {
+                                    // fires select event for new tooltip, then unselect.
+                                    unselect: function(event) {
+                                        var chart = this.series.chart;
+                                        
+                                        // if we are selecting a new point, don't hide tooltip
+                                        if (this.selected) {
+                                            $('#customTooltip').hide().empty();
+                                        } else {
+                                            // reposition tooltip
+                                            positionTooltip(this.series.chart, this);
+                                        }
+                                    },
+                                    select: function(event) {
+                                        var self = this;
+                                        
+                                        // position tooltip
+                                        var point = this;
+                                        positionTooltip(this.series.chart, point);
+                                        
+                                        // update tooltip text
+                                        updateTooltipText(parseInt(this.x), parseInt(this.y));
+                                        
+                                        // unbind any previous handlers and add this one
+                                        $('#customTooltip').off('click').on('click', '.modifyValue', function (event) {
+                                            var $button = $(this);
+                                            var y = point.y;
+                                            
+                                            if ($button.attr('value') === '+') {
+                                                y += 1;
+                                            } else {
+                                                y -= 1;
+                                            }
+                                            
+                                            point.update(y);
+                                            
+                                            // update tooltip text
+                                            updateTooltipText(parseInt(self.x), parseInt(y));
+                                        });
+                                        
+                                        $('#customTooltip').one('click', '.removePoint', function (event) {
+                                            //var point = event.data.point;
+                                            point.remove();
+                                            $('#customTooltip').hide().empty();
+                                        });
+                                        
+                                        $('#customTooltip').show();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+                
+                $('#example6').highcharts(chart6Options);
+                
+                // --- Taking actions on other events ---
+                // E.g. do things when the chart loads, redraws, etc.
+                var chart7Options = {
+                    chart: {
+                        type: 'spline',
+                        events: {
+                            redraw: function(event) {
+                                console.log('Chart has been redrawn! (event, this)', event, this);
+                            }
+                        }
+                    },
+                    plotOptions: {
+                        // scatter-plot-specific events
+                        scatter: {
+                            events: {
+                                legendItemClick: function(event) {
+                                    console.log('Series visibility toggled! (Event, this)', event, this);
+                                },
+                                mouseOver: function(event) {
+                                    // perhaps get fresh data, if appropriate?
+                                    console.log('Graph hovered! (Event, this)', event, this);
+                                }
+                            }
+                        },
+                        // series-specific events
+                        series: {
+                            allowPointSelect: true,
+                            point: {
+                                events: {
+                                    select: function (event) {
+                                        console.log('Point selected! (Event, this)', event, this);
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    title: {
+                        text: 'Taking actions on other events'
+                    },
+                    series: [{
+                        name: 'Random data',
+                        data: (function() {
+                            var data = [],
+                                limit = 20,
+                                maxY = 100,
+                                count = 0;
+                                
+                            while (count < limit) {
+                                data.push({
+                                    x: 5*count,
+                                    y: Math.random()*maxY
+                                })
+                                count++;
+                            }
+                            
+                            return data;
+                        }())
+                    }],
+                    xAxis: {
+                        min: 0,
+                        max: 100
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: 100
+                    }
+                };
+                
+                $('#example7').highcharts(chart7Options);
+                
+                // --- Adding events after the chart has rendered ---
+                var chart8Options = {
+                    chart: {
+                        type: 'spline'
+                    },
+                    title: {
+                        text: 'Adding events after the chart has rendered'
+                    },
+                    series: [{
+                        name: 'Random data',
+                        data: (function() {
+                            var data = [],
+                                limit = 20,
+                                maxY = 100,
+                                count = 0;
+                                
+                            while (count < limit) {
+                                data.push({
+                                    x: 5*count,
+                                    y: Math.random()*maxY
+                                })
+                                count++;
+                            }
+                            
+                            return data;
+                        }())
+                    }],
+                    xAxis: {
+                        min: 0,
+                        max: 100
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: 100
+                    }
+                };
+                
+                var chart8 = $('#example8').highcharts(chart8Options).highcharts();
+                
+                // Oh no! The chart has already rendered! How do we add events now?
+                // Note that not all events can be handled this way
+                Highcharts.addEvent(chart8.series[0], 'click', function(event) {
+                    console.log('Captured click event!', event);
+                });
+                
+                // Alternatively (will fire twice now)
+                // Can also use whatever framework appropriate binding exists. Below is for jQuery
+                $(chart8.series[0]).on('click', function(event) {
+                    console.log('Captured click event!', event);
+                });
+            });
+        </script>        
+    </body>
+</html>

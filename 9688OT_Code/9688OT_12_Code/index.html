@@ -1,0 +1,844 @@
+<html>
+    <head>
+        <title>Chapter 12 - Other Inspirational Uses - Examples</title>
+        
+        <style type='text/css'>
+            .example-container {
+                border: 1px solid #000;
+                padding: 20px;
+                float: left;
+                margin: 10px;
+                min-width: 300px;
+                min-height: 300px;
+            }
+            
+            .example {
+                width: 300px;
+                height: 300px;
+                float: left;
+            }
+            
+            .relative {
+                position: relative;
+            }
+            
+            .example + .example {
+                margin-left: 60px;
+            }
+            
+            label {
+                width: 100px;
+                display: inline-block;
+            }
+            
+            textarea {
+                width: 100%;
+                height: 200px;
+            }
+            
+            br {
+                clear: both;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='example-container'>
+            <div class='example' id='example1'></div><br/>
+            <label for='timezone'>Timezone:</label>
+            <select name='timezone' id='timezone'>
+                <option value='localtime'>Localtime</option>
+                <option value='-8'>Pacific (UTC-08:00)</option>
+                <option value='-7'>Mountain (UTC-07:00)</option>
+                <option value='-6'>Central (UTC-06:00)</option>
+                <option value='-5'>Eastern (UTC-05:00)</option>
+                <option value='-4'>Atlantic (UTC-04:00)</option>
+                <option value='-3.5'>Newfoundland (UTC-03:30)</option>
+            </select>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example2'></div><br/>
+            <button type='button' id='start'>Start</button>
+            <button type='button' id='reset'>Reset</button>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example3'></div><br/>
+            <textarea id='wpm'></textarea>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example4'></div><br/>
+            <button id='record-location'>Record Location</button><br/>
+            <ul id='log-messages'></ul>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example5'></div>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example6'></div><br/>
+            <button id='start-compass'>Start Compass</button><br/>
+            <ul id='compass-messages'></ul>
+        </div>
+        
+        <div class='example-container'>
+            <div class='example' id='example7'></div><br/>
+            <label for='date-list'>Date:</label>
+            <select name='date-list' id='date-list'>
+            </select><br/>
+            <label for='weight'>Weight (kg):</label>
+            <input type='text' name='weight' id='weight' />
+            <button name='modify' id='modify'>Add / Modify</button>
+        </div>
+        
+        <!-- Include the verbose version of jQuery -->
+        <script src='./bower_components/jquery/jquery.js'></script>
+        
+        <!-- Include the verbose version of highcharts -->
+        <script src='./bower_components/highcharts/highcharts.src.js'></script>
+        
+        <!-- Include the verbose version of highcharts extras -->
+        <script src='./bower_components/highcharts/highcharts-more.src.js'></script>
+        
+        <!-- Include Underscore -->
+        <script src='./bower_components/underscore/underscore.js'></script>
+        
+        <!-- Include our scripts -->
+        <script type='text/javascript'>
+            // Execute this function as soon as jQuery is ready
+            $(document).ready(function() {
+                // --- Demonstrating timezones with clock charts ---
+                var example1 = function() {
+                    var clockTimezone;
+            
+                    var getClockPositions = function(options) {
+                        var date, now, tzOffset, tzDifference;
+                        
+                        options = options || {};
+                        
+                        date = new Date();
+                        tzOffset = parseFloat(options.tz);
+                        
+                        if (tzOffset) {
+                            tzDifference = (tzOffset * 60) + date.getTimezoneOffset();
+                            now = new Date(date.getTime() + tzDifference * 60 * 1000);
+                        } else {
+                            now = date;
+                        }
+                    
+                        return {
+	                        hours: now.getHours() + (now.getMinutes() / 60),
+	                        minutes: ((now.getMinutes() * 12) / 60) + ((now.getSeconds() * 12) / 3600),
+	                        seconds: ((now.getSeconds() * 12) / 60)
+	                    };
+                    };
+                    
+                    var initialPosition = getClockPositions();
+                
+                    var chart1Options = {
+                        chart: {
+                            type: 'gauge'
+                        },
+                        title: {
+                            text: 'Time'
+                        },
+                        subtitle: {
+                            text: 'Localtime'
+                        },
+                        yAxis: {
+                            min: 0,
+                            max: 12,
+                            showFirstLabel: false,
+                            tickInterval: 1
+                        },
+                        tooltip: {
+	                    	enabled: false
+	                    },
+                        series: [{
+                            animation: false,
+                            dataLabels: {
+                                // prevent value of hands from showing
+	                            enabled: false 
+	                        },
+                            data: [{
+                                id: 'hours',
+                                y: initialPosition.hours,
+                                dial: {
+                                    radius: '70%'
+                                }
+                            }, {
+                                id: 'minutes',
+                                y: initialPosition.minutes,
+                                dial: {
+                                    radius: '90%'
+                                }
+                            }, {
+                                id: 'seconds',
+                                y: initialPosition.seconds,
+                                dial: {
+                                    radius: '90%',
+                                    baseWidth: 1,
+                                    backgroundColor: '#faa',
+                                    borderColor: '#faa'
+                                }
+                            }]
+                        }]
+                    };
+                    var chart1 = $('#example1').highcharts(chart1Options).highcharts();
+                    
+                    var clockInterval = setInterval(function() {
+                        var hours = chart1.get('hours'),
+                            minutes = chart1.get('minutes'),
+                            seconds = chart1.get('seconds'),
+                            now = getClockPositions({
+                                tz: clockTimezone
+                            }),
+                            redraw = true;
+                            animate = false;
+                            
+                        hours.update(now.hours, redraw, animate);
+                        minutes.update(now.minutes, redraw, animate);
+                        seconds.update(now.seconds, redraw, animate);
+                    }, 1000);
+                    
+                    $('#timezone').change(function(event) {
+                        var tz = this.value,
+                            tzText = $(this).find(':selected').text();
+
+                        clockTimezone = tz;
+                        chart1.setTitle(undefined, {text: tzText});
+                    });
+                }
+                
+                example1();
+                
+                // --- Highcharts Stopwatch ---
+                var example2 = function() {
+                    var chart2Options = {
+                        chart: {
+                            type: 'gauge'
+                        },
+                        title: {
+                            text: 'Stopwatch'
+                        },
+                        yAxis: {
+                            min: 0,
+                            max: 60,
+                            showFirstLabel: false,
+                            tickInterval: 5
+                        },
+                        tooltip: {
+	                    	enabled: false
+	                    },
+                        series: [{
+                            animation: false,
+                            dataLabels: {
+	                            formatter: function() {
+	                                // Output in the following format:
+	                                //      HH:mm:ss.ms
+	                                var hours,
+        	                            minutes,
+        	                            seconds,
+        	                            milli,
+        	                            s = this.y,
+        	                            H = 3600, // 1h = 3600 s
+        	                            M = 60,   // 1m = 60 s
+
+	                                hours   = Math.floor(s / H);
+	                                minutes = Math.floor((s - (hours * H)) / M)
+                                    seconds = Math.floor((s - (hours * H) - (minutes * M)));
+                                    milli = parseInt((s*1000) % 1000);
+                                    
+                                    // Need to add padding
+                                    if (hours   < 10)  { hours   = "0" + hours; }
+                                    if (minutes < 10)  { minutes = "0" + minutes; }
+                                    if (seconds < 10)  { seconds = "0" + seconds; }
+                                    if (milli   < 100) { milli   = "0" + milli; }
+                                    if (milli   < 10)  { milli   = "0" + milli; }
+	                                
+	                                return hours + ':' + minutes + ':' + seconds + '.' + milli;
+	                            }
+	                        },
+                            data: [{
+                                id: 'seconds',
+                                y: 0,
+                                dial: {
+                                    radius: '90%',
+                                    baseWidth: 1,
+                                    backgroundColor: '#faa',
+                                    borderColor: '#faa'
+                                }
+                            }]
+                        }]
+                    };
+                    var chart2 = $('#example2').highcharts(chart2Options).highcharts();
+                    
+                    var stopWatchInterval;
+                    var minimumResolution = 100;
+                    
+                    var updateTimer = function(value) {
+                        var seconds = chart2.get('seconds'),
+                            prevValue = seconds.y,
+                            nextValue,
+                            redraw = true,
+                            animate = false;
+                            
+                        if (value != undefined) {
+                            nextValue = value;
+                        } else {
+                            nextValue = prevValue + (minimumResolution / 1000);
+                        }
+                            
+                        seconds.update(nextValue, redraw, animate);
+                    };
+                    
+                    var timerRunning = function() {
+                        return !!stopWatchInterval;
+                    };
+                    
+                    var startTimer = function() {
+                        stopWatchInterval = setInterval(function() {
+                            updateTimer();
+                        }, minimumResolution);
+                        $('#start').text('Stop');
+                    };
+                    
+                    var stopTimer = function() {
+                        clearInterval(stopWatchInterval);
+                        stopWatchInterval = 0;
+                        $('#start').text('Start');
+                    };
+                    
+                    $('#start').click(function() {
+                        if (!timerRunning()) {
+                            startTimer();
+                        } else {
+                            stopTimer();
+                        }
+                    });
+                    
+                    $('#reset').click(function() {
+                        if (timerRunning()) {
+                            stopTimer();
+                        }
+                    
+                        updateTimer(0);
+                    });
+                };
+                
+                example2();
+                
+                
+                
+                // --- Words per minute detector ---
+                var example3 = function() {
+                    var chart3Options = {
+                        chart: {
+                            type: 'gauge'
+                        },
+                        title: {
+                            text: 'Words Per Minute (WPM)'
+                        },
+                        pane: {
+                            startAngle: -150,
+                	        endAngle: 150,
+                        },
+                        yAxis: {
+                            min: 0,
+                            max: 200,
+                            tickInterval: 10
+                        },
+                        tooltip: {
+	                    	enabled: false
+	                    },
+                        series: [{
+                            animation: false,
+                            data: [{
+                                id: 'wpm',
+                                y: 0,
+                                dial: {
+                                    radius: '90%',
+                                    baseWidth: 1,
+                                    backgroundColor: '#faa',
+                                    borderColor: '#faa'
+                                }
+                            }]
+                        }]
+                    };
+                    var chart3 = $('#example3').highcharts(chart3Options).highcharts();
+                    
+                    var keystrokes = 0;
+                    var totalTime = 0;
+                    var lastTime = 0;
+                    var currTime = 0;
+                    var wpm = 0;
+                    var pastWPM = [];
+                    
+                    //WPM <- 5 keystrokes = 1 word
+                    $('#wpm').on('keyup', function(){
+                        var words,
+                            wpmilli,
+                            animate = true,
+                            redraw = true,
+                            sumOver = 3,
+                            subset;
+                            
+                            
+                        currTime = new Date().getTime();
+                            
+                        if (lastTime != 0) {                
+                            keystrokes++;
+                            
+                            totalTime += currTime - lastTime;
+                            
+                            // http://en.wikipedia.org/wiki/Words_per_minute
+                            words = keystrokes / 5;
+                            wpmilli = words / totalTime;
+                            pastWPM.push(wpmilli * 60000);
+                            
+                            // take the average of the past few values to
+                            // smooth things out
+                            if (pastWPM.length >= sumOver ) {
+                                subset = _.last(pastWPM, sumOver);
+                                wpm = _.reduce(subset, function(a, b) {
+                                    return a + b;
+                                }) / sumOver;
+                            }
+                        }
+                        
+                        lastTime = currTime;
+                    });
+                    
+                    // Update the guage periodically.
+                    setInterval(function() {
+                        var redraw = true,
+                            animate = true; 
+                        chart3.get('wpm').update(wpm, redraw, animate)
+                    }, 1000)
+                };
+                
+                example3();
+                
+                // --- Distance travelled graph ---
+                var example4 = function() {
+                    var calculateDistance = function(p1, p2) {
+                        var radius = 6378.137; // km
+                        
+                        // convert measures to radians
+                        var dLat = ((p1.y - p2.y) * Math.PI) / 180;
+                        var dLon = ((p1.x - p2.x) * Math.PI) / 180;
+
+                        // See http://en.wikipedia.org/wiki/Great-circle_distance#Formulas
+                        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                                Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(p1.y) * Math.cos(p2.y);
+                                
+                        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+                        
+                        var d = radius * c;
+                        
+                        return d;
+                    };
+                    
+                    var chart4Options = {
+                        chart: {
+                            type: 'bubble'
+                        },
+                        title: {
+                            text: 'My Location'
+                        },
+                        subtitle: {
+                            text: 'Over time'
+                        },
+                        xAxis: {
+                            title: {
+                                text: 'Longitude'
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Latitude'
+                            }
+                        },
+                        tooltip: {
+                            formatter: function() {
+                                var coordsLn,
+                                    recordedLn,
+                                    distanceLn,
+                                    distance,
+                                    index,
+                                    p;
+                                
+                                index = this.series.data.indexOf(this.point);
+                                
+                                if (index > 0) {
+                                    distance = calculateDistance(
+                                        this.point,
+                                        this.series.data[index-1]
+                                    );
+                                } else {
+                                    distance = 0;
+                                }
+                                
+                                recordedLn = '<b>Recorded:</b> ' + new Date(this.point.timestamp) + '<br/>';
+                                coordsLn = '<b>Coordinates:</b> (' + this.x + ', ' + this.y + ')<br/>';
+                                distanceLn = '<b>Geographical distance from last logged:</b> ~' + distance + 'km';
+                                return recordedLn + coordsLn + distanceLn;
+                            },
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        series: [{
+                            id: 'position',
+                            lineWidth: 1,
+                            data: []
+                        }]
+                    };
+                    
+                    var chart4 = $('#example4').highcharts(chart4Options).highcharts();
+                    
+                    var key = 'highcharts_location';
+                    var addToLocalStorage = function(point) {
+                        var data = JSON.parse(localStorage[key] || "[]");
+                        data.push(point);
+                        localStorage[key] = JSON.stringify(data);
+                    };
+                    
+                    var loadInitial = function() {
+                        var data = JSON.parse(localStorage[key] || "[]");
+                        chart4.get('position').setData(data);
+                    };
+                    
+                    var addToLog = function(msg) {
+                        var $log, $elem, now, nowString;
+                        
+                        now = new Date();
+                        nowString = now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate();
+                        
+                        $log = $('#log-messages');
+                        $log.empty();
+                        
+                        $elem = $('<li/>', {
+                            text: nowString + ': ' + msg
+                        });
+                        
+                        $log.append($elem);
+                    };
+                    
+                    try {
+                        navigator.geolocation.getCurrentPosition(function(){});
+                    } catch(e) {
+                        addToLog('It appears that your browser does not support the Geolocation API :(');
+                    }
+                    
+                    $('#record-location').click(function() {
+                        navigator.geolocation.getCurrentPosition(function(p){
+                            var position = chart4.get('position'),
+                                point;
+                                
+                            point = {
+                                y: p.coords.latitude,
+                                x: p.coords.longitude,
+                                z: p.coords.accuracy,
+                                altitude: p.coords.altitude,
+                                timestamp: p.timestamp
+                            }
+                            
+                            position.addPoint(point);
+                            addToLocalStorage(point);
+                        });
+                    
+                        addToLog('Location Recorded!');
+                    });
+                    
+                    loadInitial();
+                };
+                
+                example4();
+                
+                // --- Tweets per day ---
+                var example5 = function() {
+                    $.getJSON('/tweets/summary', function(data) {
+                        var chart5Options = {
+                            chart: {
+                                type: 'bubble'
+                            },
+                            title: {
+                                text: 'Tweets per day'
+                            },
+                            xAxis: {
+                                type: 'datetime'
+                            },
+                            yAxis: {
+                                min: 1,
+                                max: 31,
+                                title: {
+                                    text: 'Day of Month'
+                                }
+                            },
+                            tooltip: {
+                                formatter: function() {
+                                    var line1, line2, date, day, count, fmtDate;
+                                    
+                                    date = new Date(this.point.x);
+                                    day = this.point.y;
+                                    count = this.point.z;
+                                    
+                                    date.setDate(date.getDate() + day - 1);
+                                    fmtDate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+                                    
+                                    line1 = '<b>' + fmtDate + '</b><br/>';
+                                    line2 = '<b>Tweets:</b> ' + count;
+                                    
+                                    return line1 + line2;
+                                }
+                            },
+                            series: [{
+                                name: 'Tweets',
+                                data: data
+                            }]
+                        };
+                        $('#example5').highcharts(chart5Options);
+                    });
+                };
+                
+                example5();
+                
+                // --- Compass ---
+                var example6 = function() {
+                    var chart6Options = {
+                        chart: {
+                            type: 'gauge'
+                        },
+                        title: {
+                            text: 'Compass'
+                        },
+                        yAxis: {
+                            min: 0,
+                            max: 360,
+                            showLastLabel: false,
+                            tickInterval: 45,
+                            labels: {
+                                formatter: function() {
+                                    var direction,
+                                        directions = {
+                                            0: 'N',
+                                            45: 'NE',
+                                            90: 'E',
+                                            135: 'SE',
+                                            180: 'S',
+                                            225: 'SW',
+                                            270: 'W',
+                                            315: 'NW'
+                                        };
+                                        
+                                    direction = directions[this.value] || '';
+
+                                    return '<b>' + direction + '</b>'
+                                }
+                            }
+                        },
+                        tooltip: {
+	                    	enabled: false
+	                    },
+                        series: [{
+                            animation: false,
+                            dataLabels: false,
+                            data: [{
+                                id: 'north',
+                                y: 0,
+                                dial: {
+                                    radius: '90%',
+                                    backgroundColor: '#f66',
+                                    borderColor: '#faa',
+                                    baseWidth: 5,
+                                    baseLength: '90%'
+                                }
+                            }, {
+                                id: 'south',
+                                y: 180,
+                                dial: {
+                                    radius: '90%',
+                                    backgroundColor: '#bbb',
+                                    borderColor: '#000',
+                                    baseWidth: 5,
+                                    baseLength: '90%'
+                                }
+                            }]
+                        }]
+                    };
+                    var chart6 = $('#example6').highcharts(chart6Options).highcharts();
+                    
+                    var compassInt;
+                    var compassOn = function () {
+                        return !!compassInt;
+                    };
+                    
+                    var startCompass = function() {
+                        compassInt = navigator.geolocation.watchPosition(function(p){
+                            var northSeries = chart6.get('north'),
+                                southSeries = chart6.get('south'),
+                                redraw = true,
+                                animate = false,
+                                north,
+                                south;
+                                
+                            north = p.coords.heading;
+                            south = (180 + north) % 360;
+                                
+                            northSeries.update(north, redraw, animate);
+                            southSeries.update(south, redraw, animate);
+                            
+                        });
+                        $('#start-compass').text('Stop Compass');
+                    };
+                    
+                    var stopCompass = function () {
+                        navigator.geolocation.clearWatch(compassInt);
+                        compassInt = 0;
+                        $('#start-compass').text('Start Compass');
+                    };
+                    
+                    $('#start-compass').click(function() {
+                        var $elem,
+                            $msgs = $('#compass-message');
+                        try {
+                            if(compassOn()) {
+                                stopCompass();
+                            } else {
+                                startCompass();
+                            }
+                        } catch(e) {
+                            $('#compass-messages').empty();
+                            
+                            $elem = $('<li/>', {
+                                text: 'It appears that your browser does not support the Geolocation API :('
+                            });
+                            
+                            $('#compass-messages').append($elem)
+                        }
+                    });
+                };
+                
+                example6();
+                
+                // --- Weight Watcher ---
+                var example7 = function() {
+                    var chart7Options = {
+                        chart: {
+                            type: 'spline'
+                        },
+                        title: {
+                            text: 'Weight Watcher'
+                        },
+                        xAxis: {
+                            type: 'datetime'
+                        },
+                        series: [{
+                            id: 'weight',
+                            name: 'Weight',
+                            data: []
+                        }]
+                    }
+                    
+                    var chart7 = $('#example7').highcharts(chart7Options).highcharts();
+                    
+                    // reload previous values initially
+                    var key = 'highcharts_weightwatcher';
+                    
+                    var addToList = function(timestamp, weight) {
+                        var $elem, $list = $('#date-list');
+                        
+                        $elem = $('<option/>', {
+                            value: timestamp,
+                            text: new Date(timestamp)
+                        });
+                        $elem.data('weight', weight);
+                        
+                        $list.append($elem);
+                    };
+                    
+                    var getDataFromStorage = function() {
+                        var obj, list
+                    
+                        obj = JSON.parse(localStorage[key] || "{}");
+                        
+                        list = _.pairs(obj);
+                        return _.map(list, function(item) {
+                            return [
+                                parseInt(item[0]),
+                                item[1]
+                            ];
+                        });
+                    };
+                    
+                    var loadInitial = window.loadInitial = function() {
+                        var data = getDataFromStorage();
+                        var $list = $('#date-list');
+                        
+                        $list.empty();
+                        
+                        $list.append('<option value="new" selected="selected">New Entry</option>');
+                        
+                        _.each(data, function(item) {
+                            addToList(item[0], item[1]);
+                        });
+                        
+                        // Add Data to chart
+                        var series = chart7.get('weight');
+                        
+                        series.setData(data);
+                    };
+                    
+                    var modifyData = window.modifyData = function(weight, date) {
+                        var data = JSON.parse(localStorage[key] || "{}");
+                        
+                        date = date || new Date();
+                        
+                        data[date.getTime()] = weight;
+                        
+                        localStorage[key] = JSON.stringify(data);
+                    };
+                    
+                    $('#modify').click(function() {
+                        var listValue, weight, date, isNew, timestamp, series, redraw;
+                        
+                        weight = parseInt($('#weight').val());
+                        listValue = $('#date-list').val();
+                        isNew = (listValue === 'new');
+                        
+                        series = chart7.get('weight');
+                        if (isNew) {
+                            date = new Date();
+                            timestamp = date.getTime();
+                            
+                            addToList(date.getTime(), weight);
+                            series.addPoint([timestamp, weight]);
+                        } else {
+                            timestamp = parseInt(listValue);
+                            date = new Date(timestamp)
+                        }
+                    
+                        modifyData(weight, date);
+                        
+                        redraw = true;
+                        if (!isNew) {
+                            series.setData(getDataFromStorage(), redraw)
+                        }
+                    });
+                    
+                    $('#date-list').change(function() {
+                        var value = $(this).find(':selected').data('weight') || '';
+                        $('#weight').val(value);
+                    });
+                    
+                    loadInitial();
+                };
+                
+                example7();
+            });
+        </script>        
+    </body>
+</html>

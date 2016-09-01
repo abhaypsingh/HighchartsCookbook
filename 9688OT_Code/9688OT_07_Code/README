@@ -1,0 +1,23 @@
+Setup Instructions
+==================
+
+Server-side setup
+----------------------------
+1. Install PHP 5.1.0 or greater (http://php.net/manual/en/install.php)
+2. Install SQLite (http://www.sqlite.org/download.html)
+3. Download the Yii framework (http://www.yiiframework.com/download), and extract it to `yii-highcharts/yii`
+
+Client-side setup
+-----------------
+1. Install bower (http://bower.io)
+2. From the same folder that contains `bower.json`, run the following command to install any necessary JavaScript packages:
+
+    bower install
+
+Running the examples
+--------------------
+1. Run the following from `yii-highcharts`
+
+    php -S localhost:8080
+    
+2. Visit `http://localhost:8080/example_app`
